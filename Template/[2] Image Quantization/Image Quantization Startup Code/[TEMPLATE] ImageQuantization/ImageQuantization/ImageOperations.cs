@@ -278,49 +278,58 @@ namespace ImageQuantization
             return distinct_colors;   //Total Function's Complexity = E(N^2)
         }
 
-        public static HashSet<RGBPixel> getDistincitColors2(RGBPixel[,] ImageMatrix) 
-        {
-            int Height = ImageMatrix.GetLength(0);              //O(1)
-            int Width = ImageMatrix.GetLength(1);               //O(1)
-            HashSet<RGBPixel> distict_colors = new HashSet<RGBPixel>(); //O(1)
-            for (int i = 0; i < Height; i++)                    //O(N) 
-            {
-                for (int j = 0; j < Width; j++)                 //O(N) 
-                {
-                    distict_colors.Add(ImageMatrix[i, j]);      //O(N)
-                }
-            }
-            return distict_colors;                            //Total Function's Complexity = E(N^3)
-        }
+        //public static HashSet<RGBPixel> getDistincitColors2(RGBPixel[,] ImageMatrix) 
+        //{
+        //    int Height = ImageMatrix.GetLength(0);              //O(1)
+        //    int Width = ImageMatrix.GetLength(1);               //O(1)
+        //    HashSet<RGBPixel> distict_colors = new HashSet<RGBPixel>(); //O(1)
+        //    for (int i = 0; i < Height; i++)                    //O(N) 
+        //    {
+        //        for (int j = 0; j < Width; j++)                 //O(N) 
+        //        {
+        //            distict_colors.Add(ImageMatrix[i, j]);      //O(N)
+        //        }
+        //    }
+        //    return distict_colors;                            //Total Function's Complexity = E(N^3)
+        //}
 
 
-        public static List<RGBPixel> getDistincitColors3(RGBPixel[,] ImageMatrix)
-        {
-            bool[,,] visited_color = new bool[256, 256, 256];
+        //public static List<RGBPixel> getDistincitColors3(RGBPixel[,] ImageMatrix)
+        //{
+        //    bool[,,] visited_color = new bool[256, 256, 256];
 
-            RGBPixel color;
+        //    RGBPixel color;
 
-            List<RGBPixel> dstinected_color = new List<RGBPixel>();
+        //    List<RGBPixel> dstinected_color = new List<RGBPixel>();
 
-            int Height = ImageMatrix.GetLength(0);
-            int Width = ImageMatrix.GetLength(1);
-            for (int i = 0; i < Height; i++)
-            {
-                for (int j = 0; j < Width; j++)
-                {
-                    color = ImageMatrix[i, j];
-                    if (visited_color[color.red, color.green, color.blue] == false)
-                    {
-                        visited_color[color.red, color.green, color.blue] = true;
-                        dstinected_color.Add(color);
-                    }
-                }
-            }
-            return dstinected_color;
-        }
+        //    int Height = ImageMatrix.GetLength(0);
+        //    int Width = ImageMatrix.GetLength(1);
+        //    for (int i = 0; i < Height; i++)
+        //    {
+        //        for (int j = 0; j < Width; j++)
+        //        {
+        //            color = ImageMatrix[i, j];
+        //            if (visited_color[color.red, color.green, color.blue] == false)
+        //            {
+        //                visited_color[color.red, color.green, color.blue] = true;
+        //                dstinected_color.Add(color);
+        //            }
+        //        }
+        //    }
+        //    return dstinected_color;
+        //}
+
+
 
 
         /////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// get the distance between nodes
+        /// </summary>
+        /// <param name="ImageMatrix"></param>
+        /// <returns>Dictionary of distinected color and its number </returns>
+        /// 
         public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getDistanceBetweenColors(Dictionary<RGBPixel, Boolean> DistinctColor)
         {
             Dictionary<RGBPixel, List<KeyValuePair<RGBPixel,double>>> FullyconnectedGraph = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
