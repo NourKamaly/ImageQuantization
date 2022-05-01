@@ -4,6 +4,7 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.Linq;
 ///Algorithms Project
 ///Intelligent Scissors
 ///
@@ -21,8 +22,8 @@ namespace ImageQuantization
     {
         public double red, green, blue;
     }
-    
-  
+
+
     /// <summary>
     /// Library of static functions that deal with images
     /// </summary>
@@ -92,7 +93,7 @@ namespace ImageQuantization
 
             return Buffer;
         }
-        
+
         /// <summary>
         /// Get the height of the image 
         /// </summary>
@@ -152,13 +153,13 @@ namespace ImageQuantization
         }
 
 
-       /// <summary>
-       /// Apply Gaussian smoothing filter to enhance the edge detection 
-       /// </summary>
-       /// <param name="ImageMatrix">Colored image matrix</param>
-       /// <param name="filterSize">Gaussian mask size</param>
-       /// <param name="sigma">Gaussian sigma</param>
-       /// <returns>smoothed color image</returns>
+        /// <summary>
+        /// Apply Gaussian smoothing filter to enhance the edge detection 
+        /// </summary>
+        /// <param name="ImageMatrix">Colored image matrix</param>
+        /// <param name="filterSize">Gaussian mask size</param>
+        /// <param name="sigma">Gaussian sigma</param>
+        /// <returns>smoothed color image</returns>
         public static RGBPixel[,] GaussianFilter1D(RGBPixel[,] ImageMatrix, int filterSize, double sigma)
         {
             int Height = GetHeight(ImageMatrix);
@@ -167,7 +168,7 @@ namespace ImageQuantization
             RGBPixelD[,] VerFiltered = new RGBPixelD[Height, Width];
             RGBPixel[,] Filtered = new RGBPixel[Height, Width];
 
-           
+
             // Create Filter in Spatial Domain:
             //=================================
             //make the filter ODD size
@@ -245,5 +246,113 @@ namespace ImageQuantization
         }
 
 
+
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// get the distinected color in a Set of pair 
+        /// 1- Counter of the color
+        /// 2- The RGB color 
+        /// from the rgb pixel array to a Dictionary
+        /// </summary>
+        /// <param name="ImageMatrix"></param>
+        /// <returns>Dictionary of distinected color and its number </returns>
+        /// 
+        public static Dictionary<RGBPixel, Boolean> getDistincitColors(RGBPixel[,] ImageMatrix)
+        {
+            Dictionary<RGBPixel, Boolean> distinct_colors = new Dictionary<RGBPixel, Boolean>();//O(1)
+            int Height = ImageMatrix.GetLength(0);              //O(1)
+            int Width = ImageMatrix.GetLength(1);               //O(1)
+            for(int i = 0; i < Height; i++)                     //O(N)
+            {
+                for(int j = 0; j<Width; j++)                    //O(N)
+                {
+                    if (distinct_colors.Count == 0 || !distinct_colors.ContainsKey(ImageMatrix[i, j]))//O(1) 
+                    {
+                        distinct_colors.Add(ImageMatrix[i, j],true);//O(1)
+                    }
+                }
+            }
+            return distinct_colors;   //Total Function's Complexity = E(N^2)
+        }
+
+        public static HashSet<RGBPixel> getDistincitColors2(RGBPixel[,] ImageMatrix) 
+        {
+            int Height = ImageMatrix.GetLength(0);              //O(1)
+            int Width = ImageMatrix.GetLength(1);               //O(1)
+            HashSet<RGBPixel> distict_colors = new HashSet<RGBPixel>(); //O(1)
+            for (int i = 0; i < Height; i++)                    //O(N) 
+            {
+                for (int j = 0; j < Width; j++)                 //O(N) 
+                {
+                    distict_colors.Add(ImageMatrix[i, j]);      //O(N)
+                }
+            }
+            return distict_colors;                            //Total Function's Complexity = E(N^3)
+        }
+
+
+        public static List<RGBPixel> getDistincitColors3(RGBPixel[,] ImageMatrix)
+        {
+            bool[,,] visited_color = new bool[256, 256, 256];
+
+            RGBPixel color;
+
+            List<RGBPixel> dstinected_color = new List<RGBPixel>();
+
+            int Height = ImageMatrix.GetLength(0);
+            int Width = ImageMatrix.GetLength(1);
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    color = ImageMatrix[i, j];
+                    if (visited_color[color.red, color.green, color.blue] == false)
+                    {
+                        visited_color[color.red, color.green, color.blue] = true;
+                        dstinected_color.Add(color);
+                    }
+                }
+            }
+            return dstinected_color;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getDistanceBetweenColors(Dictionary<RGBPixel, Boolean> DistinctColor)
+        {
+            Dictionary<RGBPixel, List<KeyValuePair<RGBPixel,double>>> FullyconnectedGraph = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
+            for(int i=0;i< DistinctColor.Count;i++)
+            {
+                RGBPixel Current = DistinctColor.ElementAt(i).Key;
+                double R = Current.red;
+                double G = Current.green;
+                double B = Current.blue;
+                List<KeyValuePair<RGBPixel, double>> edges = new List<KeyValuePair<RGBPixel, double>>();
+                for (int j = 0; j < DistinctColor.Count; j++)
+                {
+                    if (j == i) continue;
+                    RGBPixel next = DistinctColor.ElementAt(j).Key;
+                    double r = next.red;
+                    double g = next.green;
+                    double b = next.blue;
+                    double result = Math.Sqrt(Math.Pow(R - r, 2) + Math.Pow(G - g, 2) + Math.Pow(B - b, 2));
+
+                    edges.Add(new KeyValuePair<RGBPixel, double>(next, result));
+
+                }
+                FullyconnectedGraph.Add(Current,edges);
+            }
+            return FullyconnectedGraph;
+        }
+
     }
+
+
+
+
+
+
 }
