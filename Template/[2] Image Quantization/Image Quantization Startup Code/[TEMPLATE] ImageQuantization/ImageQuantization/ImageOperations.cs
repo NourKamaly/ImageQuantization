@@ -365,12 +365,15 @@ namespace ImageQuantization
             Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST =  new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
             Dictionary<RGBPixel, int> IndexSet = new Dictionary<RGBPixel, int>();
             int position = 0;
+            // Complexity : O(V)
             foreach (var Vertex in FullyConnectedGraph.Keys)
             {
                 IndexSet.Add(Vertex, position);
                 position++;
-            }
+            }  
             Dictionary<double,List<edge>> distances = new Dictionary<double, List<edge>>();
+
+            // Complexity : O(V+E)
             foreach (var Node in FullyConnectedGraph)
             {
                 foreach (var Neighbor in Node.Value)
@@ -388,6 +391,7 @@ namespace ImageQuantization
                 }
             }
             // Sorting by key which is the distance
+            //Complexity : O(E)
             var SortedDistances = distances.OrderBy(Dist => Dist.Key);
             int vertices = FullyConnectedGraph.Keys.Count, MSTEdges = 0;
             bool MSTIsComplete = false;
@@ -403,30 +407,20 @@ namespace ImageQuantization
                         MSTIsComplete = true;
                         break;
                     }
-                    if (MST.Keys.Count != 0)
+                    
+                    if (IndexSet[Neighbour.From] == IndexSet[Neighbour.To])
                     {
-                       if (IndexSet[Neighbour.From] == IndexSet[Neighbour.To])
-                       {
-                            continue;
-                       }
-                       else
-                       {
-                            if (!MST.ContainsKey(Neighbour.From))
-                            {
-                                MST.Add(Neighbour.From, new List<KeyValuePair<RGBPixel, double>>());
-                            }
-                            AddToMST(MST, Neighbour.From, Neighbour.To, MinimumDistance.Key, ref MSTEdges);
-                            Union(IndexSet, IndexSet[Neighbour.From], IndexSet[Neighbour.To]);
-                        }
-
+                        continue;
                     }
                     else
                     {
-                        MST.Add(Neighbour.From, new List<KeyValuePair<RGBPixel, double>>());
+                        if (!MST.ContainsKey(Neighbour.From))
+                        {
+                            MST.Add(Neighbour.From, new List<KeyValuePair<RGBPixel, double>>());
+                        }
                         AddToMST(MST, Neighbour.From, Neighbour.To, MinimumDistance.Key, ref MSTEdges);
-                        Union(IndexSet, IndexSet[Neighbour.From],IndexSet[Neighbour.To]);   
+                        Union(IndexSet, IndexSet[Neighbour.From], IndexSet[Neighbour.To]);
                     }
-                   
                 }
                 if (MSTIsComplete)
                 {
@@ -436,6 +430,7 @@ namespace ImageQuantization
             return MST;
            
         }
+        //Complexity : O(V)
         public static void Union (Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
         {
             foreach(var Index in IndexSet)
@@ -446,6 +441,7 @@ namespace ImageQuantization
                 }
             }
         }
+        //Complexity : O(1)
         public static void AddToMST(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST,RGBPixel From, RGBPixel To, double distance, ref int MSTEdges)
         {
             KeyValuePair<RGBPixel, double> KVP = new KeyValuePair<RGBPixel, double>(To, distance);
