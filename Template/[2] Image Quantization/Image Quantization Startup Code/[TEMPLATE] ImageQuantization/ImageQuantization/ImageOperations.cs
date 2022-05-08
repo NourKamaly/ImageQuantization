@@ -356,6 +356,97 @@ namespace ImageQuantization
             }
             return FullyconnectedGraph;
         }
+        struct edge 
+        {
+            public RGBPixel from, to;
+        }
+        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
+        {
+            Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST =  new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
+            Dictionary<RGBPixel, int> indexSet = new Dictionary<RGBPixel, int>();
+            int position = 0;
+            foreach (var Vertex in FullyConnectedGraph.Keys)
+            {
+                indexSet.Add(Vertex, position);
+                position++;
+            }
+            Dictionary<double,List<edge>> distances = new Dictionary<double, List<edge>>();
+            foreach (var Node in FullyConnectedGraph)
+            {
+                foreach (var Neighbor in Node.Value)
+                {
+                    if (!distances.ContainsKey(Neighbor.Value))
+                    {
+                        distances.Add(Neighbor.Value, new List<edge>());
+                    }
+                    edge e = new edge();
+                    e.from = Node.Key;
+                    e.to = Neighbor.Key;
+                    //new KeyValuePair<RGBPixel, RGBPixel>(Node.Key,Edge.Key);
+                    distances[Neighbor.Value].Add(e);
+                }
+            }
+            var SortedDistances = distances.OrderBy(Dist => Dist.Key);
+            int vertices = FullyConnectedGraph.Keys.Count, MSTEdges = 0;
+            bool MSTIsComplete = false;
+            // minimum distance . key  =  double distance
+            // minimum distance . values  = edges that have this weight 
+            foreach (var MinimumDistance in SortedDistances)
+            {
+                foreach (var Neighbour in MinimumDistance.Value)
+                {
+                    if (MSTEdges == vertices - 1)
+                    {
+                        MSTIsComplete = true;
+                        break;
+                    }
+                    if (MST.Keys.Count != 0)
+                    {
+                       if (indexSet[Neighbour.from] == indexSet[Neighbour.to])
+                       {
+                            continue;
+                       }
+                       else
+                       {
+                            if (!MST.ContainsKey(Neighbour.from))
+                            {
+                                MST.Add(Neighbour.from, new List<KeyValuePair<RGBPixel, double>>());
+                            }
+                            KeyValuePair<RGBPixel, double> kvp = new KeyValuePair<RGBPixel, double>(Neighbour.to, MinimumDistance.Key);
+                            MST[Neighbour.from].Add(kvp);
+                            MSTEdges++;
+                            Union(indexSet, indexSet[Neighbour.from], indexSet[Neighbour.to]);
+                        }
+
+                    }
+                    else
+                    {
+                        MST.Add(Neighbour.from, new List<KeyValuePair<RGBPixel, double>>());
+                        KeyValuePair<RGBPixel, double> kvp = new KeyValuePair<RGBPixel, double>(Neighbour.to, MinimumDistance.Key);
+                        MST[Neighbour.from].Add(kvp);
+                        MSTEdges++;
+                        Union(indexSet, indexSet[Neighbour.from],indexSet[Neighbour.to]);   
+                    }
+                   
+                }
+                if (MSTIsComplete)
+                {
+                    break;
+                }
+            }
+            return MST;
+           
+        }
+        public static void Union (Dictionary<RGBPixel, int> indexSet, int ReplaceBy, int Replaced)
+        {
+            foreach(var index in indexSet)
+            {
+                if(index.Value == Replaced)
+                {
+                    indexSet[index.Key] = ReplaceBy;
+                }
+            }
+        }
 
     }
 
