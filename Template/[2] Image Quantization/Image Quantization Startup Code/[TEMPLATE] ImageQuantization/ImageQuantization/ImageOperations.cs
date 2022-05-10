@@ -363,7 +363,7 @@ namespace ImageQuantization
         {
             public RGBPixel From, To;
         }
-        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
+        /*public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getKruksalMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
         {
             Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST =  new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
             Dictionary<RGBPixel, int> IndexSet = new Dictionary<RGBPixel, int>();
@@ -432,7 +432,7 @@ namespace ImageQuantization
             }
             return MST;
            
-        }
+        }*/
         //Complexity : O(V)
         public static void Union ( Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
         {
@@ -453,7 +453,18 @@ namespace ImageQuantization
             MST[From].Add(KVP);
             MSTEdges++;
         }
-        
+        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getEagerPrimMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
+        {
+            Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
+            int vertices = FullyConnectedGraph.Keys.Count;
+            SortedDictionary<double, KeyValuePair<RGBPixel,RGBPixel>> SortedDistances = new SortedDictionary<double, KeyValuePair<RGBPixel,RGBPixel>>();
+            bool[] IsVisited = new bool[vertices];
+            bool MSTIsComplete = false;
+            int MSTEdges = 0;
+
+            return MST;
+        }
+
 
         //////////////////////////////////////////////////////////////
 
