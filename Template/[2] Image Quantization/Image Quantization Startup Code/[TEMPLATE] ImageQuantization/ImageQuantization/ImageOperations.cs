@@ -293,6 +293,7 @@ namespace ImageQuantization
         //    return distict_colors;                            //Total Function's Complexity = E(N^3)
         //}
 
+        //------------------------------------------------------------------------------------------------------------------------------------------//
 
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
@@ -322,20 +323,19 @@ namespace ImageQuantization
 
 
 
-        /////////////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////////////////////////////////////////////////////////////
+        //------------------------------------------------------------------------------------------------------------------------------------------//
         /// <summary>
         /// get the distance between nodes
         /// </summary>
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
-        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getDistanceBetweenColors(Dictionary<RGBPixel, Boolean> DistinctColor)
+        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
         {
             Dictionary<RGBPixel, List<KeyValuePair<RGBPixel,double>>> FullyconnectedGraph = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
             for(int i=0;i< DistinctColor.Count;i++)
             {
-                RGBPixel Current = DistinctColor.ElementAt(i).Key;
+                RGBPixel Current = DistinctColor[i];
                 double R = Current.red;
                 double G = Current.green;
                 double B = Current.blue;
@@ -343,7 +343,7 @@ namespace ImageQuantization
                 for (int j = 0; j < DistinctColor.Count; j++)
                 {
                     if (j == i) continue;
-                    RGBPixel next = DistinctColor.ElementAt(j).Key;
+                    RGBPixel next = DistinctColor[j];
                     double r = next.red;
                     double g = next.green;
                     double b = next.blue;
@@ -356,6 +356,9 @@ namespace ImageQuantization
             }
             return FullyconnectedGraph;
         }
+
+        //------------------------------------------------------------------------------------------------------------------------------------------//
+
         struct edge 
         {
             public RGBPixel From, To;
