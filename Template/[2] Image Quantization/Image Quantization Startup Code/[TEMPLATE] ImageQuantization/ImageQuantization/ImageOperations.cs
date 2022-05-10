@@ -260,23 +260,23 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
-        public static Dictionary<RGBPixel, Boolean> getDistincitColors(RGBPixel[,] ImageMatrix)
-        {
-            Dictionary<RGBPixel, Boolean> distinct_colors = new Dictionary<RGBPixel, Boolean>();//O(1)
-            int Height = ImageMatrix.GetLength(0);              //O(1)
-            int Width = ImageMatrix.GetLength(1);               //O(1)
-            for(int i = 0; i < Height; i++)                     //O(N)
-            {
-                for(int j = 0; j<Width; j++)                    //O(N)
-                {
-                    if (distinct_colors.Count == 0 || !distinct_colors.ContainsKey(ImageMatrix[i, j]))//O(1) 
-                    {
-                        distinct_colors.Add(ImageMatrix[i, j],true);//O(1)
-                    }
-                }
-            }
-            return distinct_colors;   //Total Function's Complexity = E(N^2)
-        }
+        //public static Dictionary<RGBPixel, Boolean> getDistincitColors(RGBPixel[,] ImageMatrix)
+        //{
+        //    Dictionary<RGBPixel, Boolean> distinct_colors = new Dictionary<RGBPixel, Boolean>();//O(1)
+        //    int Height = ImageMatrix.GetLength(0);              //O(1)
+        //    int Width = ImageMatrix.GetLength(1);               //O(1)
+        //    for(int i = 0; i < Height; i++)                     //O(N)
+        //    {
+        //        for(int j = 0; j<Width; j++)                    //O(N)
+        //        {
+        //            if (distinct_colors.Count == 0 || !distinct_colors.ContainsKey(ImageMatrix[i, j]))//O(1) 
+        //            {
+        //                distinct_colors.Add(ImageMatrix[i, j],true);//O(1)
+        //            }
+        //        }
+        //    }
+        //    return distinct_colors;   //Total Function's Complexity = E(N^2)
+        //}
 
         //public static HashSet<RGBPixel> getDistincitColors2(RGBPixel[,] ImageMatrix) 
         //{
@@ -294,30 +294,30 @@ namespace ImageQuantization
         //}
 
 
-        //public static List<RGBPixel> getDistincitColors3(RGBPixel[,] ImageMatrix)
-        //{
-        //    bool[,,] visited_color = new bool[256, 256, 256];
+        public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
+        {
+            bool[,,] visited_color = new bool[256, 256, 256];
 
-        //    RGBPixel color;
+            RGBPixel color;
 
-        //    List<RGBPixel> dstinected_color = new List<RGBPixel>();
+            List<RGBPixel> dstinected_color = new List<RGBPixel>();
 
-        //    int Height = ImageMatrix.GetLength(0);
-        //    int Width = ImageMatrix.GetLength(1);
-        //    for (int i = 0; i < Height; i++)
-        //    {
-        //        for (int j = 0; j < Width; j++)
-        //        {
-        //            color = ImageMatrix[i, j];
-        //            if (visited_color[color.red, color.green, color.blue] == false)
-        //            {
-        //                visited_color[color.red, color.green, color.blue] = true;
-        //                dstinected_color.Add(color);
-        //            }
-        //        }
-        //    }
-        //    return dstinected_color;
-        //}
+            int Height = ImageMatrix.GetLength(0);
+            int Width = ImageMatrix.GetLength(1);
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    color = ImageMatrix[i, j];
+                    if (visited_color[color.red, color.green, color.blue] == false)
+                    {
+                        visited_color[color.red, color.green, color.blue] = true;
+                        dstinected_color.Add(color);
+                    }
+                }
+            }
+            return dstinected_color;
+        }
 
 
 
@@ -419,7 +419,7 @@ namespace ImageQuantization
                             MST.Add(Neighbour.From, new List<KeyValuePair<RGBPixel, double>>());
                         }
                         AddToMST(MST, Neighbour.From, Neighbour.To, MinimumDistance.Key, ref MSTEdges);
-                        Union(IndexSet, IndexSet[Neighbour.From], IndexSet[Neighbour.To]);
+                        Union( IndexSet, IndexSet[Neighbour.From], IndexSet[Neighbour.To]);
                     }
                 }
                 if (MSTIsComplete)
@@ -431,23 +431,29 @@ namespace ImageQuantization
            
         }
         //Complexity : O(V)
-        public static void Union (Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
+        public static void Union ( Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
         {
-            foreach(var Index in IndexSet)
+            for(int i=0;i<IndexSet.Count;i++)
             {
-                if(Index.Value == Replaced)
+                if(IndexSet.ElementAt(i).Value == Replaced)
                 {
-                    IndexSet[Index.Key] = ReplaceBy;
+                    IndexSet[IndexSet.ElementAt(i).Key] = ReplaceBy;
                 }
             }
         }
         //Complexity : O(1)
-        public static void AddToMST(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST,RGBPixel From, RGBPixel To, double distance, ref int MSTEdges)
+        public static double MSTSUM= 0;
+        public static void AddToMST(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST, RGBPixel From, RGBPixel To, double distance, ref int MSTEdges)
         {
+            MSTSUM += distance;
             KeyValuePair<RGBPixel, double> KVP = new KeyValuePair<RGBPixel, double>(To, distance);
             MST[From].Add(KVP);
             MSTEdges++;
         }
+        
+
+        //////////////////////////////////////////////////////////////
+
 
     }
 

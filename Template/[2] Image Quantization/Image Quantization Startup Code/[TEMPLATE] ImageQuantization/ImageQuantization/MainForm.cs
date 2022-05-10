@@ -38,10 +38,16 @@ namespace ImageQuantization
             ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            textBox1.Text = ImageOperations.getDistincitColors(ImageMatrix).Count.ToString();
+            //ImageOperations.MSTSUM = 0;
+            //ImageOperations.getMinimumSpanningTree(ImageOperations.getDistanceBetweenColors(ImageOperations.getDistincitColors(ImageMatrix)));
+            textBox1.Text = ImageOperations.MSTSUM.ToString();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            textBox2.Text = ImageOperations.getDistincitColors(ImageMatrix).Count.ToString();
         }
     }
 }
