@@ -295,30 +295,31 @@ namespace ImageQuantization
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
 
-        public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
-        {
-            bool[,,] visited_color = new bool[256, 256, 256];
+        //public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
+        //{
+        //    bool[,,] visited_color = new bool[256, 256, 256];
 
-            RGBPixel color;
+        //    RGBPixel color;
 
-            List<RGBPixel> dstinected_color = new List<RGBPixel>();
+        //    List<RGBPixel> dstinected_color = new List<RGBPixel>();
 
-            int Height = ImageMatrix.GetLength(0);
-            int Width = ImageMatrix.GetLength(1);
-            for (int i = 0; i < Height; i++)
-            {
-                for (int j = 0; j < Width; j++)
-                {
-                    color = ImageMatrix[i, j];
-                    if (visited_color[color.red, color.green, color.blue] == false)
-                    {
-                        visited_color[color.red, color.green, color.blue] = true;
-                        dstinected_color.Add(color);
-                    }
-                }
-            }
-            return dstinected_color;
-        }
+        //    int Height = ImageMatrix.GetLength(0);
+        //    int Width = ImageMatrix.GetLength(1);
+        //    for (int i = 0; i < Height; i++)
+        //    {
+        //        for (int j = 0; j < Width; j++)
+        //        {
+        //            color = ImageMatrix[i, j];
+        //            if (visited_color[color.red, color.green, color.blue] == false)
+        //            {
+        //                visited_color[color.red, color.green, color.blue] = true;
+        //                dstinected_color.Add(color);
+        //            }
+        //        }
+        //    }
+        //    return dstinected_color;
+        //}
+       
 
 
 
@@ -455,7 +456,7 @@ namespace ImageQuantization
         public static double MSTSum;
         // this is my fully connected graph 
         public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> AdjList;
-        public static int vertices ;
+        public static int vertices;
         public static bool[,,] IsVisited;
         // IndexedPriorityQueue : destination node -> (source node, edge weight)
         public static Dictionary<RGBPixel, KeyValuePair<RGBPixel,double>>IndexedPriorityQueue; 
@@ -521,15 +522,9 @@ namespace ImageQuantization
             return MST;
         }
 
-
         //////////////////////////////////////////////////////////////
 
-
     }
-
-
-
-
 
 
 }
