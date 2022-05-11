@@ -434,7 +434,7 @@ namespace ImageQuantization
            
         }*/
         //Complexity : O(V)
-        public static void Union ( Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
+       /* public static void Union ( Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
         {
             for(int i=0;i<IndexSet.Count;i++)
             {
@@ -443,25 +443,81 @@ namespace ImageQuantization
                     IndexSet[IndexSet.ElementAt(i).Key] = ReplaceBy;
                 }
             }
-        }
+        }*/
         //Complexity : O(1)
-        public static double MSTSUM= 0;
-        public static void AddToMST(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST, RGBPixel From, RGBPixel To, double distance, ref int MSTEdges)
+        /*public static void AddToMST(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST, RGBPixel From, RGBPixel To, double distance, ref int MSTEdges)
         {
-            MSTSUM += distance;
+            MSTSum += distance;
             KeyValuePair<RGBPixel, double> KVP = new KeyValuePair<RGBPixel, double>(To, distance);
             MST[From].Add(KVP);
             MSTEdges++;
+        }*/
+        public static double MSTSum;
+        // this is my fully connected graph 
+        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> AdjList;
+        public static int vertices ;
+        public static bool[,,] IsVisited;
+        // IndexedPriorityQueue : destination node -> (source node, edge weight)
+        public static Dictionary<RGBPixel, KeyValuePair<RGBPixel,double>>IndexedPriorityQueue; 
+        public static void updateIndexedPriorityQueue(RGBPixel SourceNode)
+        {
+            //byte []Node = new byte[](vertex.red, vertex.green, vertex.blue);
+            IsVisited[SourceNode.red, SourceNode.green, SourceNode.blue] = true;
+            // DestinationNode is a keyValuePair<RGBPixel, double>
+            // RGBPixel representing the node the edge is pointing at 
+            foreach (var DestinationNode in AdjList[SourceNode])
+            {
+                if (IsVisited[DestinationNode.Key.red, DestinationNode.Key.green, DestinationNode.Key.blue] == true)
+                {
+                    continue;
+                }
+                // if i am visiting a new vertex for the first time
+                if (!IndexedPriorityQueue.ContainsKey(DestinationNode.Key))
+                {
+                    IndexedPriorityQueue.Add(DestinationNode.Key, new KeyValuePair<RGBPixel, double>(SourceNode, DestinationNode.Value));
+                }
+                else
+                {
+                    if (IndexedPriorityQueue[DestinationNode.Key].Value > DestinationNode.Value)
+                    {
+                        KeyValuePair<RGBPixel, double> UpdatedRoute = new KeyValuePair<RGBPixel, double>(SourceNode, DestinationNode.Value);
+                        IndexedPriorityQueue[DestinationNode.Key] = UpdatedRoute;
+                    }
+                }
+                
+            }
         }
         public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getEagerPrimMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
         {
+            AdjList = FullyConnectedGraph;
+            IndexedPriorityQueue = new Dictionary<RGBPixel, KeyValuePair<RGBPixel, double>>();
+            vertices = AdjList.Keys.Count;
             Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
-            int vertices = FullyConnectedGraph.Keys.Count;
-            SortedDictionary<double, KeyValuePair<RGBPixel,RGBPixel>> SortedDistances = new SortedDictionary<double, KeyValuePair<RGBPixel,RGBPixel>>();
-            bool[] IsVisited = new bool[vertices];
-            bool MSTIsComplete = false;
+            IsVisited = new bool[vertices, vertices, vertices];
+            MSTSum = 0;
+            //bool MSTIsComplete = false;
             int MSTEdges = 0;
+            RGBPixel[] Keys = FullyConnectedGraph.Keys.ToArray();
+            updateIndexedPriorityQueue(Keys[0]);
+            while (IndexedPriorityQueue.Count > 0)
+            {
+                if (MSTEdges == vertices - 1)
+                {
+                    break;
+                }
+                var SortedIndexedPriorityQueue = IndexedPriorityQueue.OrderBy(EdgeWeight=>EdgeWeight.Value.Value);
+                var FirstElement = SortedIndexedPriorityQueue.First();
+                IndexedPriorityQueue.Remove(FirstElement.Value.Key);
+                if (!MST.ContainsKey(FirstElement.Value.Key))
+                {
+                    MST.Add(FirstElement.Value.Key, new List<KeyValuePair<RGBPixel, double>>());
+                }
+                MST[FirstElement.Value.Key].Add(new KeyValuePair<RGBPixel, double>(FirstElement.Key, FirstElement.Value.Value));
+                MSTEdges++;
+                MSTSum += FirstElement.Value.Value;
+                updateIndexedPriorityQueue(FirstElement.Key);
 
+            }
             return MST;
         }
 
