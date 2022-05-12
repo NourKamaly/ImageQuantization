@@ -306,17 +306,14 @@ namespace ImageQuantization
                 double G = Current.green;
                 double B = Current.blue;
 
-                string RED, BLUE, GREEN, hexColor; 
-                int Node1 , Node2;
+                string RED_1 = Current.red.ToString("X");
+                string GREEN_1 = Current.green.ToString("X");
+                string BLUE_1 = Current.blue.ToString("X");
+                string hexColor_1 = RED_1 + GREEN_1 + BLUE_1;
 
-                RED = Current.red.ToString("X");
-                GREEN = Current.green.ToString("X");
-                BLUE = Current.blue.ToString("X");
-                hexColor = RED + GREEN + BLUE;
+                int Node_1 = Convert.ToInt32(hexColor_1, 16);
 
-                Node1 = Convert.ToInt32(hexColor, 16);
-
-                List<KeyValuePair<RGBPixel, double>> edges = new List<KeyValuePair<RGBPixel, double>>();
+                List<KeyValuePair<int, double>> edges = new List<KeyValuePair<int, double>>();
                 for (int j = 0; j < DistinctColor.Count; j++)
                 {
                     if (j == i) continue;
@@ -326,12 +323,17 @@ namespace ImageQuantization
                     double b = next.blue;
                     double result = Math.Sqrt(Math.Pow(R - r, 2) + Math.Pow(G - g, 2) + Math.Pow(B - b, 2));
 
+                    string RED_2 = next.red.ToString("X");
+                    string GREEN_2 = next.green.ToString("X");
+                    string BLUE_2 = next.blue.ToString("X");
+                    string hexColor_2 = RED_2 + GREEN_2 + BLUE_2;
 
+                    int Node_2 = Convert.ToInt32(hexColor_2, 16);
 
-                    edges.Add(new KeyValuePair<RGBPixel, double>(next, result));
+                    edges.Add(new KeyValuePair<int, double>(Node_2, result));
 
                 }
-                FullyconnectedGraph.Add(Current,edges);
+                FullyconnectedGraph.Add(Node_1, edges);
             }
             return FullyconnectedGraph;
         }
