@@ -28,14 +28,14 @@ namespace ImageQuantization
                     {
                         visited_color[color.red, color.green, color.blue] = true;
 
-                        string left, middle, right, hexColor, back; int coloor;
-                        left = color.red.ToString("X");
-                        middle = color.green.ToString("X");
-                        right = color.blue.ToString("X");
-                        hexColor = left + middle + right;
-                        coloor = Convert.ToInt32(hexColor, 16);
+                        string Rstring, Gstring, Bstring, hexColor, back; int intColor;
+                        Rstring = color.red.ToString("X");
+                        Gstring = color.green.ToString("X");
+                        Bstring = color.blue.ToString("X");
+                        hexColor = Rstring + Gstring + Bstring;
+                        intColor = Convert.ToInt32(hexColor, 16);
 
-                        dstinected_color.Add(coloor);
+                        dstinected_color.Add(intColor);
                     }
                 }
             }

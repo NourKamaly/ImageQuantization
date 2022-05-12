@@ -336,11 +336,72 @@ namespace ImageQuantization
                 FullyconnectedGraph.Add(Node_1, edges);
             }
             return FullyconnectedGraph;
+
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
+        public class Vertex
+        {
+            public double Key{ get; set; } = double.MaxValue;
+            public int Parent { get; set; } = -1;
+            public int V { get; set; }
+            public int Color { get; set; }
+            public bool IsProcessed { get; set; }
+        }
+        public static Dictionary<int, Vertex> MST(Dictionary<int, List<KeyValuePair<int, double>>> graph)
+        {
+            PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
+            int vertexCount =graph.Count;
+            Dictionary<int,Vertex>vertices = new Dictionary<int, Vertex>();
 
-        
+            for (int i = 0; i < vertexCount; i++)
+            {
+                vertices.Add(graph.ElementAt(i).Key, new Vertex() { Key = double.MaxValue, Parent = -1, V = i, Color= graph.ElementAt(i).Key });
+                if (i == 0)
+                {
+                    vertices.ElementAt(0).Value.Key = 0;
+                }
+                queue.Enqueue(vertices.ElementAt(i).Value.Key, vertices.ElementAt(i).Value);
+            }
+          
+
+            while (queue.Count > 0)
+            {
+                Vertex minVertex = queue.Dequeue();
+                int u = minVertex.Color;
+                vertices[u].IsProcessed = true;
+                //alll edges from vertex u
+                List<KeyValuePair<int, double>> edges = graph[minVertex.Color];
+                foreach (var Neighbour in edges)
+                {
+                    if (vertices[Neighbour.Key].Key > 0 && !vertices[Neighbour.Key].IsProcessed && Neighbour.Value < vertices[Neighbour.Key].Key)
+                    {
+                        vertices[Neighbour.Key].Parent = u;
+                        vertices[Neighbour.Key].Key = Neighbour.Value;
+                        //updating priority in queue since key is priority
+                        queue.UpdatePriority(vertices[Neighbour.Key], vertices[Neighbour.Key].Key);
+                    }
+                }
+            }
+
+            return vertices;
+        }
+        public static double totalWeight = 0;
+        public static double CalculateMST(Dictionary<int, Vertex> MST) 
+        {
+
+            foreach (var u in MST)
+            {
+                if (u.Value.Parent >= 0)
+                {
+                    totalWeight += u.Value.Key;
+                }
+            }
+            return totalWeight;
+            // return 1;
+        }
+
+
 
         //-----------------------------------------------------------------------------------------------------------------------------------------//
 

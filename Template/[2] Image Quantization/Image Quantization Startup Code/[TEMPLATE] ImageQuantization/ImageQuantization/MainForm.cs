@@ -40,9 +40,9 @@ namespace ImageQuantization
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            //ImageOperations.MSTSUM = 0;
-            //ImageOperations.getMinimumSpanningTree(ImageOperations.getDistanceBetweenColors(ImageOperations.getDistincitColors(ImageMatrix)));
-            //textBox1.Text = ImageOperations.MSTSUM.ToString();
+
+            ImageOperations.totalWeight = 0;
+            textBox1.Text = ImageOperations.CalculateMST(ImageOperations.MST(ImageOperations.getDistanceBetweenColors(ImageOperations.getDistincitColors(ImageMatrix)))).ToString();
         }
 
         private void button2_Click(object sender, EventArgs e)
