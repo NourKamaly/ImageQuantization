@@ -250,7 +250,8 @@ namespace ImageQuantization
 
 
 
-        ////////////////////////////////////////////////////////////////////////////////////
+        //---------------------------------------------------------OUR CODE HERE------------------------------------------------------//
+
         /// <summary>
         /// get the distinected color in a Set of pair 
         /// 1- Counter of the color
@@ -260,86 +261,61 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
-        //public static Dictionary<RGBPixel, Boolean> getDistincitColors(RGBPixel[,] ImageMatrix)
-        //{
-        //    Dictionary<RGBPixel, Boolean> distinct_colors = new Dictionary<RGBPixel, Boolean>();//O(1)
-        //    int Height = ImageMatrix.GetLength(0);              //O(1)
-        //    int Width = ImageMatrix.GetLength(1);               //O(1)
-        //    for(int i = 0; i < Height; i++)                     //O(N)
-        //    {
-        //        for(int j = 0; j<Width; j++)                    //O(N)
-        //        {
-        //            if (distinct_colors.Count == 0 || !distinct_colors.ContainsKey(ImageMatrix[i, j]))//O(1) 
-        //            {
-        //                distinct_colors.Add(ImageMatrix[i, j],true);//O(1)
-        //            }
-        //        }
-        //    }
-        //    return distinct_colors;   //Total Function's Complexity = E(N^2)
-        //}
 
-        //public static HashSet<RGBPixel> getDistincitColors2(RGBPixel[,] ImageMatrix) 
-        //{
-        //    int Height = ImageMatrix.GetLength(0);              //O(1)
-        //    int Width = ImageMatrix.GetLength(1);               //O(1)
-        //    HashSet<RGBPixel> distict_colors = new HashSet<RGBPixel>(); //O(1)
-        //    for (int i = 0; i < Height; i++)                    //O(N) 
-        //    {
-        //        for (int j = 0; j < Width; j++)                 //O(N) 
-        //        {
-        //            distict_colors.Add(ImageMatrix[i, j]);      //O(N)
-        //        }
-        //    }
-        //    return distict_colors;                            //Total Function's Complexity = E(N^3)
-        //}
+        public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
+        {
+            bool[,,] visited_color = new bool[256, 256, 256];
 
-        //------------------------------------------------------------------------------------------------------------------------------------------//
+            RGBPixel color;
 
-        //public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
-        //{
-        //    bool[,,] visited_color = new bool[256, 256, 256];
+            List<RGBPixel> dstinected_color = new List<RGBPixel>();
 
-        //    RGBPixel color;
-
-        //    List<RGBPixel> dstinected_color = new List<RGBPixel>();
-
-        //    int Height = ImageMatrix.GetLength(0);
-        //    int Width = ImageMatrix.GetLength(1);
-        //    for (int i = 0; i < Height; i++)
-        //    {
-        //        for (int j = 0; j < Width; j++)
-        //        {
-        //            color = ImageMatrix[i, j];
-        //            if (visited_color[color.red, color.green, color.blue] == false)
-        //            {
-        //                visited_color[color.red, color.green, color.blue] = true;
-        //                dstinected_color.Add(color);
-        //            }
-        //        }
-        //    }
-        //    return dstinected_color;
-        //}
-       
-
-
+            int Height = ImageMatrix.GetLength(0);
+            int Width = ImageMatrix.GetLength(1);
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    color = ImageMatrix[i, j];
+                    if (visited_color[color.red, color.green, color.blue] == false)
+                    {
+                        visited_color[color.red, color.green, color.blue] = true;
+                        dstinected_color.Add(color);
+                    }
+                }
+            }
+            return dstinected_color;
+        }
 
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
+
         /// <summary>
         /// get the distance between nodes
         /// </summary>
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
-        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
+        public static Dictionary<int, List<KeyValuePair<int, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
         {
-            Dictionary<RGBPixel, List<KeyValuePair<RGBPixel,double>>> FullyconnectedGraph = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
+            Dictionary<int, List<KeyValuePair<int,double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
             for(int i=0;i< DistinctColor.Count;i++)
             {
                 RGBPixel Current = DistinctColor[i];
                 double R = Current.red;
                 double G = Current.green;
                 double B = Current.blue;
+
+                string RED, BLUE, GREEN, hexColor; 
+                int Node1 , Node2;
+
+                RED = Current.red.ToString("X");
+                GREEN = Current.green.ToString("X");
+                BLUE = Current.blue.ToString("X");
+                hexColor = RED + GREEN + BLUE;
+
+                Node1 = Convert.ToInt32(hexColor, 16);
+
                 List<KeyValuePair<RGBPixel, double>> edges = new List<KeyValuePair<RGBPixel, double>>();
                 for (int j = 0; j < DistinctColor.Count; j++)
                 {
@@ -349,6 +325,8 @@ namespace ImageQuantization
                     double g = next.green;
                     double b = next.blue;
                     double result = Math.Sqrt(Math.Pow(R - r, 2) + Math.Pow(G - g, 2) + Math.Pow(B - b, 2));
+
+
 
                     edges.Add(new KeyValuePair<RGBPixel, double>(next, result));
 
@@ -360,169 +338,9 @@ namespace ImageQuantization
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
 
-        struct edge 
-        {
-            public RGBPixel From, To;
-        }
-        /*public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getKruksalMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
-        {
-            Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST =  new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
-            Dictionary<RGBPixel, int> IndexSet = new Dictionary<RGBPixel, int>();
-            int position = 0;
-            // Complexity : O(V)
-            foreach (var Vertex in FullyConnectedGraph.Keys)
-            {
-                IndexSet.Add(Vertex, position);
-                position++;
-            }  
-            Dictionary<double,List<edge>> distances = new Dictionary<double, List<edge>>();
+        
 
-            // Complexity : O(V+E)
-            foreach (var Node in FullyConnectedGraph)
-            {
-                foreach (var Neighbor in Node.Value)
-                {
-                    // Neighbour key is the RGBPixel
-                    // Neighbour value is the distance
-                    if (!distances.ContainsKey(Neighbor.Value))
-                    {
-                        distances.Add(Neighbor.Value, new List<edge>());
-                    }
-                    edge e = new edge();
-                    e.From = Node.Key;
-                    e.To = Neighbor.Key;
-                    distances[Neighbor.Value].Add(e);
-                }
-            }
-            // Sorting by key which is the distance
-            //Complexity : O(E)
-            var SortedDistances = distances.OrderBy(Dist => Dist.Key);
-            int vertices = FullyConnectedGraph.Keys.Count, MSTEdges = 0;
-            bool MSTIsComplete = false;
-            // MinimumDistance key is distance 
-            // MinimumDistance value is list of structs (edges)
-            foreach (var MinimumDistance in SortedDistances)
-            {
-                //Looping over every struct
-                foreach (var Neighbour in MinimumDistance.Value)
-                {
-                    if (MSTEdges == vertices - 1)
-                    {
-                        MSTIsComplete = true;
-                        break;
-                    }
-                    
-                    if (IndexSet[Neighbour.From] == IndexSet[Neighbour.To])
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        if (!MST.ContainsKey(Neighbour.From))
-                        {
-                            MST.Add(Neighbour.From, new List<KeyValuePair<RGBPixel, double>>());
-                        }
-                        AddToMST(MST, Neighbour.From, Neighbour.To, MinimumDistance.Key, ref MSTEdges);
-                        Union( IndexSet, IndexSet[Neighbour.From], IndexSet[Neighbour.To]);
-                    }
-                }
-                if (MSTIsComplete)
-                {
-                    break;
-                }
-            }
-            return MST;
-           
-        }*/
-        //Complexity : O(V)
-       /* public static void Union ( Dictionary<RGBPixel, int> IndexSet, int ReplaceBy, int Replaced)
-        {
-            for(int i=0;i<IndexSet.Count;i++)
-            {
-                if(IndexSet.ElementAt(i).Value == Replaced)
-                {
-                    IndexSet[IndexSet.ElementAt(i).Key] = ReplaceBy;
-                }
-            }
-        }*/
-        //Complexity : O(1)
-        /*public static void AddToMST(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST, RGBPixel From, RGBPixel To, double distance, ref int MSTEdges)
-        {
-            MSTSum += distance;
-            KeyValuePair<RGBPixel, double> KVP = new KeyValuePair<RGBPixel, double>(To, distance);
-            MST[From].Add(KVP);
-            MSTEdges++;
-        }*/
-        public static double MSTSum;
-        // this is my fully connected graph 
-        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> AdjList;
-        public static int vertices;
-        public static bool[,,] IsVisited;
-        // IndexedPriorityQueue : destination node -> (source node, edge weight)
-        public static Dictionary<RGBPixel, KeyValuePair<RGBPixel,double>>IndexedPriorityQueue; 
-        public static void updateIndexedPriorityQueue(RGBPixel SourceNode)
-        {
-            //byte []Node = new byte[](vertex.red, vertex.green, vertex.blue);
-            IsVisited[SourceNode.red, SourceNode.green, SourceNode.blue] = true;
-            // DestinationNode is a keyValuePair<RGBPixel, double>
-            // RGBPixel representing the node the edge is pointing at 
-            foreach (var DestinationNode in AdjList[SourceNode])
-            {
-                if (IsVisited[DestinationNode.Key.red, DestinationNode.Key.green, DestinationNode.Key.blue] == true)
-                {
-                    continue;
-                }
-                // if i am visiting a new vertex for the first time
-                if (!IndexedPriorityQueue.ContainsKey(DestinationNode.Key))
-                {
-                    IndexedPriorityQueue.Add(DestinationNode.Key, new KeyValuePair<RGBPixel, double>(SourceNode, DestinationNode.Value));
-                }
-                else
-                {
-                    if (IndexedPriorityQueue[DestinationNode.Key].Value > DestinationNode.Value)
-                    {
-                        KeyValuePair<RGBPixel, double> UpdatedRoute = new KeyValuePair<RGBPixel, double>(SourceNode, DestinationNode.Value);
-                        IndexedPriorityQueue[DestinationNode.Key] = UpdatedRoute;
-                    }
-                }
-                
-            }
-        }
-        public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getEagerPrimMinimumSpanningTree(Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> FullyConnectedGraph)
-        {
-            AdjList = FullyConnectedGraph;
-            IndexedPriorityQueue = new Dictionary<RGBPixel, KeyValuePair<RGBPixel, double>>();
-            vertices = AdjList.Keys.Count;
-            Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> MST = new Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>>();
-            IsVisited = new bool[vertices, vertices, vertices];
-            MSTSum = 0;
-            //bool MSTIsComplete = false;
-            int MSTEdges = 0;
-            RGBPixel[] Keys = FullyConnectedGraph.Keys.ToArray();
-            updateIndexedPriorityQueue(Keys[0]);
-            while (IndexedPriorityQueue.Count > 0)
-            {
-                if (MSTEdges == vertices - 1)
-                {
-                    break;
-                }
-                var SortedIndexedPriorityQueue = IndexedPriorityQueue.OrderBy(EdgeWeight=>EdgeWeight.Value.Value);
-                var FirstElement = SortedIndexedPriorityQueue.First();
-                IndexedPriorityQueue.Remove(FirstElement.Value.Key);
-                if (!MST.ContainsKey(FirstElement.Value.Key))
-                {
-                    MST.Add(FirstElement.Value.Key, new List<KeyValuePair<RGBPixel, double>>());
-                }
-                MST[FirstElement.Value.Key].Add(new KeyValuePair<RGBPixel, double>(FirstElement.Key, FirstElement.Value.Value));
-                MSTEdges++;
-                MSTSum += FirstElement.Value.Value;
-                updateIndexedPriorityQueue(FirstElement.Key);
-
-            }
-            return MST;
-        }
-
-        //////////////////////////////////////////////////////////////
+        //-----------------------------------------------------------------------------------------------------------------------------------------//
 
     }
 

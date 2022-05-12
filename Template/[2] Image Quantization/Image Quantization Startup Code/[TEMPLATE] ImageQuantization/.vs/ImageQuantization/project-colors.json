@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "7ca8077f-c27a-400d-b6c9-7737665499ac": {
+      "ProjectGuid": "7ca8077f-c27a-400d-b6c9-7737665499ac",
+      "DisplayName": "ImageQuantization",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
