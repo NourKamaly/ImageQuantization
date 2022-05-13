@@ -345,7 +345,35 @@ namespace ImageQuantization
             //return 1;
         }
 
-
+        public static Dictionary<int, int> Clusters;
+        public static Dictionary<int, int> getKClusters(Vertex[] MST, int K)
+        {
+            List<Vertex> SortedMST = new List<Vertex>();
+            SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
+            Clusters = new Dictionary<int, int>();
+            int ctr;
+            for (ctr = 0; ctr < MST.Length; ctr++)
+            {
+                Clusters.Add(MST[ctr].color, 0);
+                SortedMST.Add(MST[ctr]);
+            }
+            SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
+            for (ctr = 0; ctr < K; ctr++)
+            {
+                Union(SortedMST[ctr].Parent, SortedMST[ctr].color);
+            }
+            return Clusters;
+        }
+        public static void Union(int ReplaceBy, int Replaced)
+        {
+            foreach (var cluster in Clusters)
+            {
+                if (cluster.Value == Replaced)
+                {
+                    Clusters[cluster.Key] = ReplaceBy;
+                }
+            }
+        }
 
         //-----------------------------------------------------------------------------------------------------------------------------------------//
 
