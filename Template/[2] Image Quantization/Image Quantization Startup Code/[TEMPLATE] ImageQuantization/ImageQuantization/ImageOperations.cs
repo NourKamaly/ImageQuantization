@@ -51,6 +51,7 @@ namespace ImageQuantization
 
             unsafe
             {
+                
                 BitmapData bmd = original_bm.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadWrite, original_bm.PixelFormat);
                 int x, y;
                 int nWidth = 0;
@@ -308,69 +309,98 @@ namespace ImageQuantization
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
 
-        public static Dictionary<int, List<KeyValuePair<int, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
+        //public static Dictionary<int, List<KeyValuePair<int, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
+        //{
+        //    Dictionary<int, List<KeyValuePair<int, double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
+        //    for (int i = 0; i < DistinctColor.Count; i++)
+        //    {
+        //        RGBPixel Current = DistinctColor[i];
+        //        double R = Current.red;
+        //        double G = Current.green;
+        //        double B = Current.blue;
+
+
+        //        List<KeyValuePair<int, double>> edges = new List<KeyValuePair<int, double>>();
+        //        for (int j = 0; j < DistinctColor.Count; j++)
+        //        {
+        //            if (j == i) continue;
+        //            RGBPixel next = DistinctColor[j];
+        //            double r = next.red;
+        //            double g = next.green;
+        //            double b = next.blue;
+        //            double result = Math.Sqrt(((R - r)*(R - r)) + ((G - g)*(G - g)) + ((B - b)*(B - b)) );
+        //            edges.Add(new KeyValuePair<int, double>(j, result));
+
+        //        }
+        //        FullyconnectedGraph.Add(i, edges);
+        //    }
+        //    return FullyconnectedGraph;
+
+        //}
+
+        public static double[,] getDistanceBetweenColors(List<RGBPixel> DistinctColor)
         {
-            Dictionary<int, List<KeyValuePair<int, double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
-            for (int i = 0; i < DistinctColor.Count; i++)
-            {
-                RGBPixel Current = DistinctColor[i];
-                double R = Current.red;
-                double G = Current.green;
-                double B = Current.blue;
 
-
-                List<KeyValuePair<int, double>> edges = new List<KeyValuePair<int, double>>();
-                for (int j = 0; j < DistinctColor.Count; j++)
+                
+                double[,] FullyconnectedGraph = new double[DistinctColor.Count,DistinctColor.Count];
+                for (int i = 0; i < DistinctColor.Count; i++)
                 {
-                    if (j == i) continue;
-                    RGBPixel next = DistinctColor[j];
-                    double r = next.red;
-                    double g = next.green;
-                    double b = next.blue;
-                    double result = Math.Sqrt(((R - r)*(R - r)) + ((G - g)*(G - g)) + ((B - b)*(B - b)) );
-                    edges.Add(new KeyValuePair<int, double>(j, result));
+                    RGBPixel Current = DistinctColor[i];
+                    double R = Current.red;
+                    double G = Current.green;
+                    double B = Current.blue;
+                    
 
+                   for (int j = 0; j < DistinctColor.Count; j++)
+                    {
+
+                        RGBPixel next = DistinctColor[j];
+                        double r = next.red;
+                        double g = next.green;
+                        double b = next.blue;
+                        double result = Math.Sqrt(((R - r) * (R - r)) + ((G - g) * (G - g)) + ((B - b) * (B - b)));
+                    //double result = Math.Sqrt(fastpower((R - r),2) + (fastpower((G - g),2)) + (fastpower((B - b),2)));
+                    FullyconnectedGraph[i,j]=result;
                 }
-                FullyconnectedGraph.Add(i, edges);
-            }
-            return FullyconnectedGraph;
+                   
+                }
+                return FullyconnectedGraph;
+   
 
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
 
-        public static Dictionary<int, Vertex> MST(Dictionary<int, List<KeyValuePair<int, double>>> graph)
+        public static Vertex[] MST(double[,] graph)
         {
             PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(graph);
-            int vertexCount = graph.Count;
-            Dictionary<int, Vertex> vertices = new Dictionary<int, Vertex>();
+            int vertexCount = graph.GetLength(0);
+            Vertex[] vertices = new Vertex[vertexCount];
 
             for (int i = 0; i < vertexCount; i++)
             {
-                vertices.Add(graph.ElementAt(i).Key, new Vertex() { Key = double.MaxValue, Parent = -1, V = i, color = graph.ElementAt(i).Key });
+                vertices[i]=new Vertex() { Key = double.MaxValue, Parent = -1, V = i};
                 if (i == 0)
                 {
-                    vertices.ElementAt(0).Value.Key = 0;
+                    vertices[i].Key = 0;
                 }
-                queue.Enqueue(vertices.ElementAt(i).Value.Key, vertices.ElementAt(i).Value);
+                queue.Enqueue(vertices[i].Key, vertices[i]);
             }
 
 
             while (queue.Count > 0)
             {
                 Vertex minVertex = queue.Dequeue();
-                int u = minVertex.color;
+                int u = minVertex.V;
                 vertices[u].IsProcessed = true;
-                //alll edges from vertex u
-                List<KeyValuePair<int, double>> edges = graph[u];
-                foreach (var Neighbour in edges)
+                for (int e=0; e<vertexCount;e++)
                 {
-                    if (vertices[Neighbour.Key].Key > 0 && !vertices[Neighbour.Key].IsProcessed && Neighbour.Value < vertices[Neighbour.Key].Key)
+                    if (graph[u,e]> 0 && !vertices[e].IsProcessed && graph[u,e]< vertices[e].Key)
                     {
-                        vertices[Neighbour.Key].Parent = u;
-                        vertices[Neighbour.Key].Key = Neighbour.Value;
+                        vertices[e].Parent = u;
+                        vertices[e].Key = graph[u,e];
                         //updating priority in queue since key is priority
-                        queue.UpdatePriority(vertices[Neighbour.Key], vertices[Neighbour.Key].Key);
+                        queue.UpdatePriority(vertices[e], vertices[e].Key);
                     }
                 }
             }
@@ -378,15 +408,12 @@ namespace ImageQuantization
             return vertices;
         }
         public static double totalWeight = 0;
-        public static double CalculateMST(Dictionary<int, Vertex> MST)
+        public static double CalculateMST(Vertex[] MST)
         {
 
-            foreach (var u in MST)
+            for (int i = 0; i < MST.Length; i++)
             {
-                if (u.Value.Parent >= 0)
-                {
-                    totalWeight += u.Value.Key;
-                }
+                totalWeight += MST[i].Key;
             }
             return totalWeight;
             //return 1;

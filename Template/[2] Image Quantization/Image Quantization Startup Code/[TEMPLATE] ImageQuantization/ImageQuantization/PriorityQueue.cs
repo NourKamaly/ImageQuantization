@@ -27,9 +27,9 @@ namespace ImageQuantization
         //object array
         List<Node> queue = new List<Node>();
         int heapSize = -1;
-        public PriorityQueue(Dictionary<int, List<KeyValuePair<int, double>>>fullyconnectedgraph) 
+        public PriorityQueue(double[,] fullyconnectedgraph) 
         {
-            int noOfVertexes = fullyconnectedgraph.Count;
+            int noOfVertexes = fullyconnectedgraph.GetLength(0);
             indexes = new int[noOfVertexes];
         }
         public int[] indexes;
