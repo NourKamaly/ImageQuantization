@@ -353,13 +353,13 @@ namespace ImageQuantization
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
             {
-                Clusters.Add(MST[ctr].color, 0);
+                Clusters.Add(MST[ctr].color, ctr);
                 SortedMST.Add(MST[ctr]);
             }
             SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
             for (ctr = 0; ctr < K; ctr++)
             {
-                Union(SortedMST[ctr].Parent, SortedMST[ctr].color);
+                Union(Clusters[SortedMST[ctr].Parent], Clusters[SortedMST[ctr].color]);
             }
             return Clusters;
         }
@@ -395,6 +395,7 @@ namespace ImageQuantization
             }
             return ClustersColors;
         }
+
         //-----------------------------------------------------------------------------------------------------------------------------------------//
 
     }
