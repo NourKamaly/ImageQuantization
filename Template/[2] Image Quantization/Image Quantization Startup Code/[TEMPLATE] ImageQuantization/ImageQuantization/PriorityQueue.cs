@@ -123,7 +123,6 @@ namespace ImageQuantization
         //            return true;
         //    return false;
         //}
-        //
 
         private void Swap(int i, int j)
         {

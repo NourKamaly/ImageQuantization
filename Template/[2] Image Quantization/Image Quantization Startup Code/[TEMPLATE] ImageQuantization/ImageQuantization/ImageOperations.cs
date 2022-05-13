@@ -26,8 +26,8 @@ namespace ImageQuantization
     {
         public double Key { get; set; } = double.MaxValue;
         public int Parent { get; set; } = -1;
+        public int color { get; set; }
         public int V { get; set; }
-        public int Color { get; set; }
         public bool IsProcessed { get; set; }
     }
 
@@ -269,8 +269,10 @@ namespace ImageQuantization
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
 
+        public static List<int> MapColor = new List<int>();
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
+            int counter = 0;
             bool[,,] visited_color = new bool[256, 256, 256];
 
             RGBPixel color;
@@ -286,6 +288,8 @@ namespace ImageQuantization
                     color = ImageMatrix[i, j];
                     if (visited_color[color.red, color.green, color.blue] == false)
                     {
+                        MapColor.Add(counter);
+                        counter++;
                         visited_color[color.red, color.green, color.blue] = true;
                         dstinected_color.Add(color);
                     }
@@ -303,6 +307,7 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
+
         public static Dictionary<int, List<KeyValuePair<int, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
         {
             Dictionary<int, List<KeyValuePair<int, double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
@@ -313,12 +318,6 @@ namespace ImageQuantization
                 double G = Current.green;
                 double B = Current.blue;
 
-                string RED_1 = Current.red.ToString("X2");
-                string GREEN_1 = Current.green.ToString("X2");
-                string BLUE_1 = Current.blue.ToString("X2");
-                string hexColor_1 = RED_1 + GREEN_1 + BLUE_1;
-
-                int Node_1 = Convert.ToInt32(hexColor_1, 16);
 
                 List<KeyValuePair<int, double>> edges = new List<KeyValuePair<int, double>>();
                 for (int j = 0; j < DistinctColor.Count; j++)
@@ -328,26 +327,18 @@ namespace ImageQuantization
                     double r = next.red;
                     double g = next.green;
                     double b = next.blue;
-                    double result = Math.Sqrt(Math.Pow(R - r, 2) + Math.Pow(G - g, 2) + Math.Pow(B - b, 2));
-
-                    string RED_2 = next.red.ToString("X2");
-                    string GREEN_2 = next.green.ToString("X2");
-                    string BLUE_2 = next.blue.ToString("X2");
-                    string hexColor_2 = RED_2 + GREEN_2 + BLUE_2;
-
-                    int Node_2 = Convert.ToInt32(hexColor_2, 16);
-
-                    edges.Add(new KeyValuePair<int, double>(Node_2, result));
+                    double result = Math.Sqrt(((R - r)*(R - r)) + ((G - g)*(G - g)) + ((B - b)*(B - b)) );
+                    edges.Add(new KeyValuePair<int, double>(j, result));
 
                 }
-                FullyconnectedGraph.Add(Node_1, edges);
+                FullyconnectedGraph.Add(i, edges);
             }
             return FullyconnectedGraph;
 
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
-        
+
         public static Dictionary<int, Vertex> MST(Dictionary<int, List<KeyValuePair<int, double>>> graph)
         {
             PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(graph);
@@ -356,7 +347,7 @@ namespace ImageQuantization
 
             for (int i = 0; i < vertexCount; i++)
             {
-                vertices.Add(graph.ElementAt(i).Key, new Vertex() { Key = double.MaxValue, Parent = -1, V = i, Color = graph.ElementAt(i).Key });
+                vertices.Add(graph.ElementAt(i).Key, new Vertex() { Key = double.MaxValue, Parent = -1, V = i, color = graph.ElementAt(i).Key });
                 if (i == 0)
                 {
                     vertices.ElementAt(0).Value.Key = 0;
@@ -368,10 +359,10 @@ namespace ImageQuantization
             while (queue.Count > 0)
             {
                 Vertex minVertex = queue.Dequeue();
-                int u = minVertex.Color;
+                int u = minVertex.color;
                 vertices[u].IsProcessed = true;
                 //alll edges from vertex u
-                List<KeyValuePair<int, double>> edges = graph[minVertex.Color];
+                List<KeyValuePair<int, double>> edges = graph[u];
                 foreach (var Neighbour in edges)
                 {
                     if (vertices[Neighbour.Key].Key > 0 && !vertices[Neighbour.Key].IsProcessed && Neighbour.Value < vertices[Neighbour.Key].Key)
