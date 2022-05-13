@@ -22,7 +22,14 @@ namespace ImageQuantization
     {
         public double red, green, blue;
     }
-
+    public class Vertex
+    {
+        public double Key { get; set; } = double.MaxValue;
+        public int Parent { get; set; } = -1;
+        public int V { get; set; }
+        public int Color { get; set; }
+        public bool IsProcessed { get; set; }
+    }
 
     /// <summary>
     /// Library of static functions that deal with images
@@ -298,17 +305,17 @@ namespace ImageQuantization
         /// 
         public static Dictionary<int, List<KeyValuePair<int, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
         {
-            Dictionary<int, List<KeyValuePair<int,double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
-            for(int i=0;i< DistinctColor.Count;i++)
+            Dictionary<int, List<KeyValuePair<int, double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
+            for (int i = 0; i < DistinctColor.Count; i++)
             {
                 RGBPixel Current = DistinctColor[i];
                 double R = Current.red;
                 double G = Current.green;
                 double B = Current.blue;
 
-                string RED_1 = Current.red.ToString("X");
-                string GREEN_1 = Current.green.ToString("X");
-                string BLUE_1 = Current.blue.ToString("X");
+                string RED_1 = Current.red.ToString("X2");
+                string GREEN_1 = Current.green.ToString("X2");
+                string BLUE_1 = Current.blue.ToString("X2");
                 string hexColor_1 = RED_1 + GREEN_1 + BLUE_1;
 
                 int Node_1 = Convert.ToInt32(hexColor_1, 16);
@@ -323,9 +330,9 @@ namespace ImageQuantization
                     double b = next.blue;
                     double result = Math.Sqrt(Math.Pow(R - r, 2) + Math.Pow(G - g, 2) + Math.Pow(B - b, 2));
 
-                    string RED_2 = next.red.ToString("X");
-                    string GREEN_2 = next.green.ToString("X");
-                    string BLUE_2 = next.blue.ToString("X");
+                    string RED_2 = next.red.ToString("X2");
+                    string GREEN_2 = next.green.ToString("X2");
+                    string BLUE_2 = next.blue.ToString("X2");
                     string hexColor_2 = RED_2 + GREEN_2 + BLUE_2;
 
                     int Node_2 = Convert.ToInt32(hexColor_2, 16);
@@ -340,30 +347,23 @@ namespace ImageQuantization
         }
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
-        public class Vertex
-        {
-            public double Key{ get; set; } = double.MaxValue;
-            public int Parent { get; set; } = -1;
-            public int V { get; set; }
-            public int Color { get; set; }
-            public bool IsProcessed { get; set; }
-        }
+        
         public static Dictionary<int, Vertex> MST(Dictionary<int, List<KeyValuePair<int, double>>> graph)
         {
-            PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
-            int vertexCount =graph.Count;
-            Dictionary<int,Vertex>vertices = new Dictionary<int, Vertex>();
+            PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(graph);
+            int vertexCount = graph.Count;
+            Dictionary<int, Vertex> vertices = new Dictionary<int, Vertex>();
 
             for (int i = 0; i < vertexCount; i++)
             {
-                vertices.Add(graph.ElementAt(i).Key, new Vertex() { Key = double.MaxValue, Parent = -1, V = i, Color= graph.ElementAt(i).Key });
+                vertices.Add(graph.ElementAt(i).Key, new Vertex() { Key = double.MaxValue, Parent = -1, V = i, Color = graph.ElementAt(i).Key });
                 if (i == 0)
                 {
                     vertices.ElementAt(0).Value.Key = 0;
                 }
                 queue.Enqueue(vertices.ElementAt(i).Value.Key, vertices.ElementAt(i).Value);
             }
-          
+
 
             while (queue.Count > 0)
             {
@@ -387,7 +387,7 @@ namespace ImageQuantization
             return vertices;
         }
         public static double totalWeight = 0;
-        public static double CalculateMST(Dictionary<int, Vertex> MST) 
+        public static double CalculateMST(Dictionary<int, Vertex> MST)
         {
 
             foreach (var u in MST)
@@ -398,7 +398,7 @@ namespace ImageQuantization
                 }
             }
             return totalWeight;
-            // return 1;
+            //return 1;
         }
 
 

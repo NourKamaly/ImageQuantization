@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
+using System.Threading;
 
 namespace ImageQuantization
 {
@@ -40,9 +42,17 @@ namespace ImageQuantization
         }
         private void button1_Click(object sender, EventArgs e)
         {
+            Stopwatch stopwatch = new Stopwatch();
 
+            stopwatch.Start();
             ImageOperations.totalWeight = 0;
             textBox1.Text = ImageOperations.CalculateMST(ImageOperations.MST(ImageOperations.getDistanceBetweenColors(ImageOperations.getDistincitColors(ImageMatrix)))).ToString();
+            stopwatch.Stop();
+            TimeSpan ts = stopwatch.Elapsed;
+            textBox3.Text =ts.Minutes +":"+ ts.Seconds+":"+ts.Milliseconds;
+
+
+
         }
 
         private void button2_Click(object sender, EventArgs e)
