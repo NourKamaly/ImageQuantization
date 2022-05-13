@@ -349,7 +349,6 @@ namespace ImageQuantization
         public static Dictionary<int, int> getKClusters(Vertex[] MST, int K)
         {
             List<Vertex> SortedMST = new List<Vertex>();
-            SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
             Clusters = new Dictionary<int, int>();
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
@@ -375,6 +374,27 @@ namespace ImageQuantization
             }
         }
 
+        public static Dictionary<int, double> getClusterRepresentitive(Dictionary<int, int> Clusters)
+        {
+            Dictionary <int, double> ClustersColors = new Dictionary <int, double> ();
+            Dictionary<int,int> NumOfElementsPerCluster = new Dictionary<int, int> ();  
+
+            foreach(var ClusterNumber in Clusters)
+            {
+                ClustersColors.Add(ClusterNumber.Value, 0.0);
+                NumOfElementsPerCluster.Add(ClusterNumber.Value,0);
+            }
+            foreach (var Node in Clusters)
+            {
+                ClustersColors[Node.Value] += Node.Key;
+                ClustersColors[Node.Value]++;
+            }
+            foreach (var cluster in ClustersColors)
+            {
+                ClustersColors[cluster.Key] /= NumOfElementsPerCluster[cluster.Key];
+            }
+            return ClustersColors;
+        }
         //-----------------------------------------------------------------------------------------------------------------------------------------//
 
     }
