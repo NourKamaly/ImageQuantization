@@ -252,12 +252,6 @@ namespace ImageQuantization
 
             return Filtered;
         }
-
-
-
-
-
-
         //---------------------------------------------------------OUR CODE HERE------------------------------------------------------//
 
         /// <summary>
@@ -300,45 +294,12 @@ namespace ImageQuantization
             return dstinected_color;
         }
 
-
-        //------------------------------------------------------------------------------------------------------------------------------------------//
-        public static double[,] getDistanceBetweenColors(List<RGBPixel> DistinctColor)
+        public static Vertex[] MST(List<RGBPixel> DistinctColors)
         {
-
-                double[,] FullyconnectedGraph = new double[DistinctColor.Count,DistinctColor.Count];
-                for (int i = 0; i < DistinctColor.Count; i++)
-                {
-                    RGBPixel Current = DistinctColor[i];
-                    double R = Current.red;
-                    double G = Current.green;
-                    double B = Current.blue;
-                    
-
-                   for (int j = 0; j < DistinctColor.Count; j++)
-                    {
-
-                        RGBPixel next = DistinctColor[j];
-                        double r = next.red;
-                        double g = next.green;
-                        double b = next.blue;
-                        double sum = (((R - r) * (R - r)) + ((G - g) * (G - g)) + ((B - b) * (B - b)));
-                        double result = Math.Sqrt(sum);
-                        //double result = Math.Sqrt(fastpower((R - r),2) + (fastpower((G - g),2)) + (fastpower((B - b),2)));
-                        FullyconnectedGraph[i,j]=result;
-                }
-                   
-                }
-                return FullyconnectedGraph;
-   
-
-        }
-
-        //------------------------------------------------------------------------------------------------------------------------------------------//
-
-        public static Vertex[] MST(double[,] graph)
-        {
-            PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(graph);
-            int vertexCount = graph.GetLength(0);
+            int[] Min = new int[DistinctColors.Count];
+            double[,] FullyconnectedGraph = new double[DistinctColors.Count, DistinctColors.Count];
+            PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(DistinctColors);
+            int vertexCount = DistinctColors.Count;
             Vertex[] vertices = new Vertex[vertexCount];
 
             for (int i = 0; i < vertexCount; i++)
@@ -350,19 +311,21 @@ namespace ImageQuantization
                 }
                 queue.Enqueue(vertices[i].Key, vertices[i]);
             }
-
-
-            while (queue.Count > 0)
+            for(int i=0;i<vertexCount-1;i++)
             {
                 Vertex minVertex = queue.Dequeue();
                 int u = minVertex.V;
                 vertices[u].IsProcessed = true;
                 for (int e=0; e<vertexCount;e++)
                 {
-                    if (graph[u,e]> 0 && !vertices[e].IsProcessed && graph[u,e]< vertices[e].Key)
+                    double distance;
+                    RGBPixel new_one1 = DistinctColors[u], new_one2 = DistinctColors[e];
+                    distance = (double)Math.Sqrt((new_one1.red - new_one2.red) * (new_one1.red - new_one2.red) + (new_one1.blue - new_one2.blue) * (new_one1.blue - new_one2.blue) + (new_one1.green - new_one2.green) * (new_one1.green - new_one2.green));
+
+                    if (distance > 0 && !vertices[e].IsProcessed && distance < vertices[e].Key)
                     {
                         vertices[e].Parent = u;
-                        vertices[e].Key = graph[u,e];
+                        vertices[e].Key = distance;
                         queue.UpdatePriority(vertices[e], vertices[e].Key);
                     }
                 }

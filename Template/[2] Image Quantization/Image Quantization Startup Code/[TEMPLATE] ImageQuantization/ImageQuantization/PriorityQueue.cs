@@ -27,10 +27,10 @@ namespace ImageQuantization
         //object array
         List<Node> queue = new List<Node>();
         int heapSize = -1;
-        public PriorityQueue(double[,] fullyconnectedgraph) 
+        public PriorityQueue(List<RGBPixel>distinctcolor) 
         {
-            int noOfVertexes = fullyconnectedgraph.GetLength(0);
-            indexes = new int[noOfVertexes];
+            int size= distinctcolor.Count;
+            indexes = new int[size];
         }
         public int[] indexes;
         public int Count { get { return queue.Count; } }
@@ -41,16 +41,10 @@ namespace ImageQuantization
             queue.Add(node);
             heapSize++;
             indexes[obj.V] = heapSize;
-            //index[1]=5
             BuildHeapMin(heapSize);
         }
         private void BuildHeapMin(int i)
         {
-            //for (int i = (heapSize - 1 / 2); i >= 0; i--)
-            //{
-            //    MinHeapify(i);
-            //}
-
             while (i >= 0 && queue[(i - 1) / 2].Priority > queue[i].Priority)
             {
 
@@ -66,7 +60,7 @@ namespace ImageQuantization
 
         private void MinHeapify(int i)
         {
-            int left = i * 2 + 1; ;
+            int left = i * 2 + 1;
             int right = i * 2 + 2;
 
             int lowest = i;
@@ -113,7 +107,6 @@ namespace ImageQuantization
                 Node node = queue[realInd];
                 node.Priority = priority;
                 BuildHeapMin(realInd);
-                //MinHeapify(realInd);
         }
 
         //public bool IsInQueue(Vertex obj)

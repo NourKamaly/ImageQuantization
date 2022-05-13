@@ -40,24 +40,34 @@ namespace ImageQuantization
             ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
         }
+        System.Windows.Forms.Timer tmr = null;
+        private void StartTimer()
+        {
+            tmr = new System.Windows.Forms.Timer();
+            tmr.Interval = 1000;
+            tmr.Tick += new EventHandler(tmr_Tick);
+            tmr.Enabled = true;
+        }
+        void tmr_Tick(object sender, EventArgs e)
+        {
+            textBox4.Text = DateTime.Now.ToString();
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             Stopwatch stopwatch = new Stopwatch();
-
             stopwatch.Start();
             ImageOperations.totalWeight = 0;
-            textBox1.Text = ImageOperations.CalculateMST(ImageOperations.MST(ImageOperations.getDistanceBetweenColors(ImageOperations.getDistincitColors(ImageMatrix)))).ToString();
+            textBox1.Text = ImageOperations.CalculateMST(ImageOperations.MST(ImageOperations.getDistincitColors(ImageMatrix))).ToString();
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             textBox3.Text =ts.Minutes +":"+ ts.Seconds+":"+ts.Milliseconds;
-
-
-
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             textBox2.Text = ImageOperations.getDistincitColors(ImageMatrix).Count.ToString();
         }
+
+
     }
 }

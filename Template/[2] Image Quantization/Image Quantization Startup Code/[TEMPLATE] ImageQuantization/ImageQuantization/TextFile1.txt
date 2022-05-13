@@ -202,3 +202,59 @@ public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getEage
     }
     return MST;
 }
+
+
+        //------------------------------------------------------------------------------------------------------------------------------------------//
+        //public static double[,] getDistanceBetweenColors(List<RGBPixel> DistinctColor)
+        //{
+
+        //    double[,] FullyconnectedGraph = new double[DistinctColor.Count, DistinctColor.Count];
+        //    double[] MinimumWeight = new double[DistinctColor.Count];
+        //    source[i] = source
+        //        min[i] = 40
+        //        dest[i] = dest
+        //        parent[i] = 0
+
+
+
+        //        for (int i = 0; i < DistinctColor.Count; i++)
+        //    {
+
+
+
+        //    }
+        //    for (int i = 0; i < DistinctColor.Count; i++)
+        //    {
+        //        RGBPixel Current = DistinctColor[i];
+        //        double R = Current.red;
+        //        double G = Current.green;
+        //        double B = Current.blue;
+
+
+        //        for (int j = 0; j < DistinctColor.Count; j++)
+        //        {
+
+        //            RGBPixel next = DistinctColor[j];
+        //            double r = next.red;
+        //            double g = next.green;
+        //            double b = next.blue;
+        //            double sum = (((R - r) * (R - r)) + ((G - g) * (G - g)) + ((B - b) * (B - b)));
+        //            double result = Math.Sqrt(sum);
+        //            double result = Math.Sqrt(fastpower((R - r), 2) + (fastpower((G - g), 2)) + (fastpower((B - b), 2)));
+        //            FullyconnectedGraph[i, j] = result;
+        //        }
+
+        //    }
+        //    return FullyconnectedGraph;
+
+
+        //}
+
+        //------------------------------------------------------------------------------------------------------------------------------------------//
+        //public static double getDistance( int i,  int j,List<RGBPixel>distinctcolors)
+        //{
+        //    double dif;
+        //    RGBPixel new_one1 = distinctcolors[i], new_one2 = distinctcolors[j];
+        //    dif =(double)Math.Sqrt((new_one1.red - new_one2.red) * (new_one1.red - new_one2.red) + (new_one1.blue - new_one2.blue) * (new_one1.blue - new_one2.blue) + (new_one1.green - new_one2.green) * (new_one1.green - new_one2.green));
+        //    return dif;
+        //}
