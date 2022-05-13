@@ -296,52 +296,15 @@ namespace ImageQuantization
                     }
                 }
             }
+
             return dstinected_color;
         }
 
 
         //------------------------------------------------------------------------------------------------------------------------------------------//
-
-        /// <summary>
-        /// get the distance between nodes
-        /// </summary>
-        /// <param name="ImageMatrix"></param>
-        /// <returns>Dictionary of distinected color and its number </returns>
-        /// 
-
-        //public static Dictionary<int, List<KeyValuePair<int, double>>> getDistanceBetweenColors(List<RGBPixel> DistinctColor)
-        //{
-        //    Dictionary<int, List<KeyValuePair<int, double>>> FullyconnectedGraph = new Dictionary<int, List<KeyValuePair<int, double>>>();
-        //    for (int i = 0; i < DistinctColor.Count; i++)
-        //    {
-        //        RGBPixel Current = DistinctColor[i];
-        //        double R = Current.red;
-        //        double G = Current.green;
-        //        double B = Current.blue;
-
-
-        //        List<KeyValuePair<int, double>> edges = new List<KeyValuePair<int, double>>();
-        //        for (int j = 0; j < DistinctColor.Count; j++)
-        //        {
-        //            if (j == i) continue;
-        //            RGBPixel next = DistinctColor[j];
-        //            double r = next.red;
-        //            double g = next.green;
-        //            double b = next.blue;
-        //            double result = Math.Sqrt(((R - r)*(R - r)) + ((G - g)*(G - g)) + ((B - b)*(B - b)) );
-        //            edges.Add(new KeyValuePair<int, double>(j, result));
-
-        //        }
-        //        FullyconnectedGraph.Add(i, edges);
-        //    }
-        //    return FullyconnectedGraph;
-
-        //}
-
         public static double[,] getDistanceBetweenColors(List<RGBPixel> DistinctColor)
         {
 
-                
                 double[,] FullyconnectedGraph = new double[DistinctColor.Count,DistinctColor.Count];
                 for (int i = 0; i < DistinctColor.Count; i++)
                 {
@@ -358,9 +321,10 @@ namespace ImageQuantization
                         double r = next.red;
                         double g = next.green;
                         double b = next.blue;
-                        double result = Math.Sqrt(((R - r) * (R - r)) + ((G - g) * (G - g)) + ((B - b) * (B - b)));
-                    //double result = Math.Sqrt(fastpower((R - r),2) + (fastpower((G - g),2)) + (fastpower((B - b),2)));
-                    FullyconnectedGraph[i,j]=result;
+                        double sum = (((R - r) * (R - r)) + ((G - g) * (G - g)) + ((B - b) * (B - b)));
+                        double result = Math.Sqrt(sum);
+                        //double result = Math.Sqrt(fastpower((R - r),2) + (fastpower((G - g),2)) + (fastpower((B - b),2)));
+                        FullyconnectedGraph[i,j]=result;
                 }
                    
                 }
@@ -399,7 +363,6 @@ namespace ImageQuantization
                     {
                         vertices[e].Parent = u;
                         vertices[e].Key = graph[u,e];
-                        //updating priority in queue since key is priority
                         queue.UpdatePriority(vertices[e], vertices[e].Key);
                     }
                 }
