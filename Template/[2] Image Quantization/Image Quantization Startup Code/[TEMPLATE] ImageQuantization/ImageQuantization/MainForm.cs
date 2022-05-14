@@ -55,10 +55,13 @@ namespace ImageQuantization
         private void button1_Click(object sender, EventArgs e)
         {
             Stopwatch stopwatch = new Stopwatch();
+            
             stopwatch.Start();
-            ImageOperations.totalWeight = 0;
-            textBox1.Text = ImageOperations.CalculateMST(ImageOperations.MST(ImageOperations.getDistincitColors(ImageMatrix))).ToString();
+            ImageOperations.sum_mst = 0;
+            ImageOperations.MST(ImageOperations.getDistincitColors(ImageMatrix));
+            textBox1.Text = ImageOperations.sum_mst.ToString();
             stopwatch.Stop();
+
             TimeSpan ts = stopwatch.Elapsed;
             textBox3.Text =ts.Minutes +":"+ ts.Seconds+":"+ts.Milliseconds;
         }

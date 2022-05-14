@@ -258,3 +258,45 @@ public static Dictionary<RGBPixel, List<KeyValuePair<RGBPixel, double>>> getEage
         //    dif =(double)Math.Sqrt((new_one1.red - new_one2.red) * (new_one1.red - new_one2.red) + (new_one1.blue - new_one2.blue) * (new_one1.blue - new_one2.blue) + (new_one1.green - new_one2.green) * (new_one1.green - new_one2.green));
         //    return dif;
         //}
+
+        ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //public static Vertex[] MST(List<RGBPixel> DistinctColors)
+        //{
+        //    int[] Min = new int[DistinctColors.Count];
+        //    double[,] FullyconnectedGraph = new double[DistinctColors.Count, DistinctColors.Count];
+        //    PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(DistinctColors);
+        //    int vertexCount = DistinctColors.Count;
+        //    Vertex[] vertices = new Vertex[vertexCount];
+
+        //    for (int i = 0; i < vertexCount; i++)
+        //    {
+        //        vertices[i]=new Vertex() { Key = double.MaxValue, Parent = -1, V = i};
+        //        if (i == 0)
+        //        {
+        //            vertices[i].Key = 0;
+        //        }
+        //        queue.Enqueue(vertices[i].Key, vertices[i]);
+        //    }
+        //    for(int i=0;i<vertexCount-1;i++)
+        //    {
+        //        Vertex minVertex = queue.Dequeue();
+        //        int u = minVertex.V;
+        //        vertices[u].IsProcessed = true;
+        //        for (int e=0; e<vertexCount;e++)
+        //        {
+        //            double distance;
+        //            RGBPixel new_one1 = DistinctColors[u], new_one2 = DistinctColors[e];
+        //            distance = (double)Math.Sqrt((new_one1.red - new_one2.red) * (new_one1.red - new_one2.red) + (new_one1.blue - new_one2.blue) * (new_one1.blue - new_one2.blue) + (new_one1.green - new_one2.green) * (new_one1.green - new_one2.green));
+
+        //            if (distance > 0 && !vertices[e].IsProcessed && distance < vertices[e].Key)
+        //            {
+        //                vertices[e].Parent = u;
+        //                vertices[e].Key = distance;
+        //                queue.UpdatePriority(vertices[e], vertices[e].Key);
+        //            }
+        //        }
+        //    }
+
+        //    return vertices;
+        //}

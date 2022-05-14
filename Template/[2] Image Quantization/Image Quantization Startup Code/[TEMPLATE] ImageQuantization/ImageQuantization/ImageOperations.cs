@@ -263,11 +263,8 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
-
-        public static List<int> MapColor = new List<int>();
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
-            int counter = 0;
             bool[,,] visited_color = new bool[256, 256, 256];
 
             RGBPixel color;
@@ -283,8 +280,6 @@ namespace ImageQuantization
                     color = ImageMatrix[i, j];
                     if (visited_color[color.red, color.green, color.blue] == false)
                     {
-                        MapColor.Add(counter);
-                        counter++;
                         visited_color[color.red, color.green, color.blue] = true;
                         dstinected_color.Add(color);
                     }
@@ -294,55 +289,57 @@ namespace ImageQuantization
             return dstinected_color;
         }
 
+        
+
+        public static double sum_mst = 0;
         public static Vertex[] MST(List<RGBPixel> DistinctColors)
         {
-            int[] Min = new int[DistinctColors.Count];
-            double[,] FullyconnectedGraph = new double[DistinctColors.Count, DistinctColors.Count];
-            PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>(DistinctColors);
             int vertexCount = DistinctColors.Count;
             Vertex[] vertices = new Vertex[vertexCount];
 
             for (int i = 0; i < vertexCount; i++)
             {
-                vertices[i]=new Vertex() { Key = double.MaxValue, Parent = -1, V = i};
-                if (i == 0)
-                {
-                    vertices[i].Key = 0;
-                }
-                queue.Enqueue(vertices[i].Key, vertices[i]);
+                vertices[i] = new Vertex() { Key = 1000000, Parent = -1, V = i };
             }
-            for(int i=0;i<vertexCount-1;i++)
-            {
-                Vertex minVertex = queue.Dequeue();
-                int u = minVertex.V;
-                vertices[u].IsProcessed = true;
-                for (int e=0; e<vertexCount;e++)
-                {
-                    double distance;
-                    RGBPixel new_one1 = DistinctColors[u], new_one2 = DistinctColors[e];
-                    distance = (double)Math.Sqrt((new_one1.red - new_one2.red) * (new_one1.red - new_one2.red) + (new_one1.blue - new_one2.blue) * (new_one1.blue - new_one2.blue) + (new_one1.green - new_one2.green) * (new_one1.green - new_one2.green));
 
-                    if (distance > 0 && !vertices[e].IsProcessed && distance < vertices[e].Key)
+            vertices[0].Key = 0;
+
+            double mn, weight;
+            int cur = 0;
+
+            while (cur < vertexCount)
+            {
+                vertices[cur].IsProcessed = true;
+                mn = 1000000000;
+                int child = 0;
+                sum_mst += vertices[cur].Key;
+
+                for (int ch = 0; ch < vertexCount; ch++)
+                {
+                    if (vertices[ch].IsProcessed == false)
                     {
-                        vertices[e].Parent = u;
-                        vertices[e].Key = distance;
-                        queue.UpdatePriority(vertices[e], vertices[e].Key);
+                        RGBPixel new_one1 = DistinctColors[cur], new_one2 = DistinctColors[ch];
+                        weight = Math.Sqrt((new_one1.red - new_one2.red) * (new_one1.red - new_one2.red) + (new_one1.blue - new_one2.blue) * (new_one1.blue - new_one2.blue) + (new_one1.green - new_one2.green) * (new_one1.green - new_one2.green));
+
+                        if (vertices[ch].Key > weight)
+                        {
+                            vertices[ch].Key = weight; vertices[ch].Parent = cur;
+                        }
+
+                        if (vertices[ch].Key < mn)
+                        {
+                            mn = vertices[ch].Key;
+                            child = ch;
+                        }
                     }
                 }
+
+                if (child == 0) break;
+
+                cur = child;
             }
 
             return vertices;
-        }
-        public static double totalWeight = 0;
-        public static double CalculateMST(Vertex[] MST)
-        {
-
-            for (int i = 0; i < MST.Length; i++)
-            {
-                totalWeight += MST[i].Key;
-            }
-            return totalWeight;
-            //return 1;
         }
 
         public static Dictionary<int, int> Clusters;
