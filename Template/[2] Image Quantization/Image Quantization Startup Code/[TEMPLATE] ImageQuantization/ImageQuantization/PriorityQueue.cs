@@ -16,7 +16,7 @@ namespace ImageQuantization
     //    public int Color { get; set; }
     //    public bool IsProcessed { get; set; }
     //}
-    internal class PriorityQueue<T>
+    public class PriorityQueue<T>
     {
         class Node
         {
@@ -24,12 +24,14 @@ namespace ImageQuantization
             public Vertex Object { get; set; }
         }
 
+        List<RGBPixel> MapColor;
         //object array
         List<Node> queue = new List<Node>();
         int heapSize = -1;
-        public PriorityQueue(List<RGBPixel>distinctcolor) 
+        public PriorityQueue(List<RGBPixel> distinctcolor)
         {
-            int size= distinctcolor.Count;
+            MapColor = distinctcolor;
+            int size = distinctcolor.Count;
             indexes = new int[size];
         }
         public int[] indexes;
@@ -39,6 +41,7 @@ namespace ImageQuantization
         {
             Node node = new Node() { Priority = priority, Object = obj };
             queue.Add(node);
+            obj.color = MapColor[obj.V];
             heapSize++;
             indexes[obj.V] = heapSize;
             BuildHeapMin(heapSize);
@@ -99,14 +102,14 @@ namespace ImageQuantization
         }
 
 
- 
+
 
         public void UpdatePriority(Vertex obj, double priority)
         {
-                int realInd = indexes[obj.V];
-                Node node = queue[realInd];
-                node.Priority = priority;
-                BuildHeapMin(realInd);
+            int realInd = indexes[obj.V];
+            Node node = queue[realInd];
+            node.Priority = priority;
+            BuildHeapMin(realInd);
         }
 
         //public bool IsInQueue(Vertex obj)

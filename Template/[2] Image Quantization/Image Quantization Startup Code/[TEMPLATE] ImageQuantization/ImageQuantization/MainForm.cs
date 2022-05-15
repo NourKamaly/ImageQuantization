@@ -55,15 +55,18 @@ namespace ImageQuantization
         private void button1_Click(object sender, EventArgs e)
         {
             Stopwatch stopwatch = new Stopwatch();
-            
+
             stopwatch.Start();
             ImageOperations.sum_mst = 0;
-            ImageOperations.MST(ImageOperations.getDistincitColors(ImageMatrix));
+            List<RGBPixel> dc = ImageOperations.getDistincitColors(ImageMatrix);
+            Vertex[] mst = ImageOperations.MST(dc);
+            Dictionary<int, int> kclusters = ImageOperations.getKClusters(mst, 3, dc);
+            Dictionary<int, int[]> representitiveColors = ImageOperations.getClusterRepresentitive(kclusters, dc);
             textBox1.Text = ImageOperations.sum_mst.ToString();
             stopwatch.Stop();
 
             TimeSpan ts = stopwatch.Elapsed;
-            textBox3.Text =ts.Minutes +":"+ ts.Seconds+":"+ts.Milliseconds;
+            textBox3.Text = ts.Minutes + ":" + ts.Seconds + ":" + ts.Milliseconds;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -71,6 +74,9 @@ namespace ImageQuantization
             textBox2.Text = ImageOperations.getDistincitColors(ImageMatrix).Count.ToString();
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
