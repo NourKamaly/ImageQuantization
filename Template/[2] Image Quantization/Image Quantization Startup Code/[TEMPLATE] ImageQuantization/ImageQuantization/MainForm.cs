@@ -40,40 +40,26 @@ namespace ImageQuantization
             ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
         }
-        System.Windows.Forms.Timer tmr = null;
-        private void StartTimer()
-        {
-            tmr = new System.Windows.Forms.Timer();
-            tmr.Interval = 1000;
-            tmr.Tick += new EventHandler(tmr_Tick);
-            tmr.Enabled = true;
-        }
-        void tmr_Tick(object sender, EventArgs e)
-        {
-            textBox4.Text = DateTime.Now.ToString();
-        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             Stopwatch stopwatch = new Stopwatch();
-
             stopwatch.Start();
             ImageOperations.sum_mst = 0;
             List<RGBPixel> dc = ImageOperations.getDistincitColors(ImageMatrix);
+            textBox2.Text = dc.Count.ToString();
             Vertex[] mst = ImageOperations.MST(dc);
-            Dictionary<int, int> kclusters = ImageOperations.getKClusters(mst, 3, dc);
+            Dictionary<int, int> kclusters = ImageOperations.getKClusters(mst,Int32.Parse(numberofclusters.Text), dc);
             Dictionary<int, int[]> representitiveColors = ImageOperations.getClusterRepresentitive(kclusters, dc);
+            ClustersDetection.initializer(ImageOperations.alledges);
+            int k=ClustersDetection.KClustersDetection();
+            textBox4.Text = k.ToString();
             textBox1.Text = ImageOperations.sum_mst.ToString();
             stopwatch.Stop();
 
             TimeSpan ts = stopwatch.Elapsed;
             textBox3.Text = ts.Minutes + ":" + ts.Seconds + ":" + ts.Milliseconds;
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            textBox2.Text = ImageOperations.getDistincitColors(ImageMatrix).Count.ToString();
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
 

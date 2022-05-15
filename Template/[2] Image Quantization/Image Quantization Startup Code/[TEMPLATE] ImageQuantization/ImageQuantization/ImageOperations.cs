@@ -31,7 +31,12 @@ namespace ImageQuantization
         public int V { get; set; }
         public bool IsProcessed { get; set; }
     }
-
+    public struct edges
+    {
+        public int source { set; get; }
+        public int destination { set; get; }
+        public double weight { set; get; }
+    }
     /// <summary>
     /// Library of static functions that deal with images
     /// </summary>
@@ -296,18 +301,12 @@ namespace ImageQuantization
 
 
         public static double sum_mst = 0;
-        public struct edges 
-        {
-            public  int source { set; get; }
-            public  int destination { set; get; }
-            public  double weight { set; get; }
-        }
-        public static edges[] alledges;
+        public static List<edges>alledges;
         public static Vertex[] MST(List<RGBPixel> DistinctColors)
         {
 
             int vertexCount = DistinctColors.Count;
-            alledges = new edges[vertexCount - 1];
+            alledges = new List<edges>(vertexCount - 1);
             Vertex[] vertices = new Vertex[vertexCount];
 
             for (int i = 0; i < vertexCount; i++)
@@ -347,12 +346,9 @@ namespace ImageQuantization
                     }
                 }
                 if (child == 0) break;
-                alledges[j] = new edges() { source = cur, destination = child, weight = minimumEdge };
-                j++;
-               
+                alledges.Add(new edges() { source = cur, destination = child, weight = minimumEdge });
                 cur = child;
             }
-            MessageBox.Show(alledges[1].weight.ToString());
             return vertices;
         }
         // key is the color number, value is the number of cluster it is belonging to
@@ -422,6 +418,9 @@ namespace ImageQuantization
             }
             return ClustersColors;
         }
+
+
+
 
         //-----------------------------------------------------------------------------------------------------------------------------------------//
 
