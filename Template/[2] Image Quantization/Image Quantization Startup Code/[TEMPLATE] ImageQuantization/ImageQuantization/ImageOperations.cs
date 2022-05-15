@@ -26,6 +26,7 @@ namespace ImageQuantization
     {
         public double Key { get; set; } = double.MaxValue;
         public int Parent { get; set; } = -1;
+        public int child { get; set; }
         public int color { get; set; }
         public int V { get; set; }
         public bool IsProcessed { get; set; }
@@ -263,8 +264,10 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
+        public static List<int> MapColor = new List<int>();
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
+            int counter = 0;
             bool[,,] visited_color = new bool[256, 256, 256];
 
             RGBPixel color;
@@ -280,21 +283,31 @@ namespace ImageQuantization
                     color = ImageMatrix[i, j];
                     if (visited_color[color.red, color.green, color.blue] == false)
                     {
+                        MapColor.Add(counter);
+                        counter++;
                         visited_color[color.red, color.green, color.blue] = true;
                         dstinected_color.Add(color);
                     }
                 }
             }
-
             return dstinected_color;
         }
 
-        
+
 
         public static double sum_mst = 0;
+        public struct edges 
+        {
+            public  int source { set; get; }
+            public  int destination { set; get; }
+            public  double weight { set; get; }
+        }
+        public static edges[] alledges;
         public static Vertex[] MST(List<RGBPixel> DistinctColors)
         {
+
             int vertexCount = DistinctColors.Count;
+            alledges = new edges[vertexCount - 1];
             Vertex[] vertices = new Vertex[vertexCount];
 
             for (int i = 0; i < vertexCount; i++)
@@ -304,13 +317,13 @@ namespace ImageQuantization
 
             vertices[0].Key = 0;
 
-            double mn, weight;
+            double minimumEdge, weight;
             int cur = 0;
-
+            int j = 0;
             while (cur < vertexCount)
             {
                 vertices[cur].IsProcessed = true;
-                mn = 1000000000;
+                minimumEdge = 1000000000;
                 int child = 0;
                 sum_mst += vertices[cur].Key;
 
@@ -326,19 +339,20 @@ namespace ImageQuantization
                             vertices[ch].Key = weight; vertices[ch].Parent = cur;
                         }
 
-                        if (vertices[ch].Key < mn)
+                        if (vertices[ch].Key < minimumEdge)
                         {
-                            mn = vertices[ch].Key;
+                            minimumEdge = vertices[ch].Key;
                             child = ch;
                         }
                     }
                 }
-
                 if (child == 0) break;
-
+                alledges[j] = new edges() { source = cur, destination = child, weight = minimumEdge };
+                j++;
+               
                 cur = child;
             }
-
+            MessageBox.Show(alledges[1].weight.ToString());
             return vertices;
         }
 
