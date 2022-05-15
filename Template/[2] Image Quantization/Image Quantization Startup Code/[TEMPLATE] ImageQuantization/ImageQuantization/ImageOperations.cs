@@ -357,20 +357,22 @@ namespace ImageQuantization
         }
 
         public static Dictionary<int, int> Clusters;
-        public static Dictionary<int, int> getKClusters(Vertex[] MST, int K)
+        public static Dictionary<int, int> getKClusters(Vertex[] MST, int K, List<RGBPixel> DistinctColors)
         {
-            List<Vertex> SortedMST = new List<Vertex>();
+            PriorityQueue<Vertex> SortedMST = new PriorityQueue<Vertex>(DistinctColors);
             Clusters = new Dictionary<int, int>();
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
             {
-                Clusters.Add(MST[ctr].color, ctr);
-                SortedMST.Add(MST[ctr]);
+
+                Clusters.Add(MST[ctr].V, ctr);
+                SortedMST.Enqueue(MST[ctr].Key,MST[ctr]);
             }
-            SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
+            //SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
             for (ctr = 0; ctr < K; ctr++)
             {
-                Union(Clusters[SortedMST[ctr].Parent], Clusters[SortedMST[ctr].color]);
+                Vertex SmallestDistance = SortedMST.Dequeue();
+                Union(Clusters[SmallestDistance.Parent], Clusters[SmallestDistance.V]);
             }
             return Clusters;
         }
