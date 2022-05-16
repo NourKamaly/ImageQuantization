@@ -300,6 +300,7 @@ namespace ImageQuantization
             this.numberofclusters.Name = "numberofclusters";
             this.numberofclusters.Size = new System.Drawing.Size(86, 20);
             this.numberofclusters.TabIndex = 27;
+            this.numberofclusters.TextChanged += new System.EventHandler(this.numberofclusters_TextChanged);
             // 
             // label8
             // 
@@ -368,6 +369,7 @@ namespace ImageQuantization
             this.Controls.Add(this.btnOpen);
             this.Name = "MainForm";
             this.Text = "Image Quantization...";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaskSize)).EndInit();

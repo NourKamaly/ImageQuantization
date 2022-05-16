@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Linq;
+using QuikGraph.Algorithms;
+using QuikGraph.Collections;
 ///Algorithms Project
 ///Intelligent Scissors
 ///
@@ -269,6 +271,7 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
+        // Key --> intColor , Value --> Index of that Color
         public static Dictionary<int, int> MapColor = new Dictionary<int, int>();
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
@@ -365,26 +368,35 @@ namespace ImageQuantization
         }
         // key is the color number, value is the number of cluster it is belonging to
         public static Dictionary<int, int> Clusters;
-        public static PriorityQueue<Vertex> SortedMST;
+        //public static PriorityQueue<Vertex> SortedMST;
+        public static FibonacciHeap<double, edges> SortedMST;
+
         public static Dictionary<int, int> getKClusters(Vertex[] MST, int K, List<RGBPixel> DistinctColors)
         {
-            SortedMST = new PriorityQueue<Vertex>(DistinctColors);
+            SortedMST = new FibonacciHeap<double, edges>();
             Clusters = new Dictionary<int, int>();
+            //int knum = DistinctColors.Count;
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
             {
                 Clusters.Add(MST[ctr].V, ctr);
-                SortedMST.Enqueue(MST[ctr].Key, MST[ctr]);
+            }
+            //MessageBox.Show(Clusters.Count.ToString());
+            for (ctr = 0; ctr < alledges.Count; ctr++)
+            {
+                SortedMST.Enqueue(alledges[ctr].weight, alledges[ctr]);
             }
             //SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
-            for (ctr = 0; ctr < K; ctr++)
+            for (ctr = 0; ctr < (DistinctColors.Count- K); ctr++)
             {
-                Vertex SmallestDistance = SortedMST.Dequeue();
-                if (SmallestDistance.Parent != -1)
-                {
-                    Union(Clusters[SmallestDistance.Parent], Clusters[SmallestDistance.V]);
-                }
+                edges SmallestDistance = SortedMST.Dequeue().Value;
+                
+                Union(Clusters[SmallestDistance.source], Clusters[SmallestDistance.destination]);
+                  //  knum--;
+                
             }
+
+
             return Clusters;
         }
         public static void Union(int ReplaceBy, int Replaced)
@@ -431,10 +443,7 @@ namespace ImageQuantization
             return ClustersColors;
         }
 
-        //public static RGBPixel[,] Quantize(Dictionary<int, int[]> ClustersColors, Dictionary<int, int> Clusters, List<RGBPixel> DistinctColors)
-        //{
-
-        //}
+        
 
 
 

@@ -56,6 +56,8 @@ namespace ImageQuantization
             int k=ClustersDetection.KClustersDetection();
             textBox4.Text = k.ToString();
             textBox1.Text = ImageOperations.sum_mst.ToString();
+           
+            
             stopwatch.Stop();
 
             TimeSpan ts = stopwatch.Elapsed;
@@ -67,6 +69,16 @@ namespace ImageQuantization
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numberofclusters_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
         {
 
         }
