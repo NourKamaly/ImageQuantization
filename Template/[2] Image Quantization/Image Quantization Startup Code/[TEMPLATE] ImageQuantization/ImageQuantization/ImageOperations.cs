@@ -322,7 +322,7 @@ namespace ImageQuantization
         {
 
             int vertexCount = DistinctColors.Count;
-            alledges = new List<edges>(vertexCount - 1);
+            
             Vertex[] vertices = new Vertex[vertexCount];
 
             for (int i = 0; i < vertexCount; i++)
@@ -362,11 +362,12 @@ namespace ImageQuantization
                     }
                 }
                 if (child == 0) break;
-                alledges.Add(new edges() { source = cur, destination = child, weight = minimumEdge });
+                
                 cur = child;
             }
             return vertices;
         }
+
         // key is the color number, value is the number of cluster it is belonging to
         public static Dictionary<int, int> Clusters;
         //public static PriorityQueue<Vertex> SortedMST;
@@ -376,11 +377,13 @@ namespace ImageQuantization
         {
             SortedMST = new FibonacciHeap<double, edges>();
             Clusters = new Dictionary<int, int>();
+            alledges = new List<edges>(MST.Length);
             //int knum = DistinctColors.Count;
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
             {
                 Clusters.Add(MST[ctr].V, ctr);
+                alledges.Add(new edges() { source = MST[ctr].Parent, destination = MST[ctr].V, weight = MST[ctr].Key });
             }
             //MessageBox.Show(Clusters.Count.ToString());
             for (ctr = 0; ctr < alledges.Count; ctr++)
@@ -388,10 +391,10 @@ namespace ImageQuantization
                 SortedMST.Enqueue(alledges[ctr].weight, alledges[ctr]);
             }
             //SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
+            edges SmallestDistance = SortedMST.Dequeue().Value;
             for (ctr = 0; ctr < (DistinctColors.Count-K); ctr++)
             {
-                edges SmallestDistance = SortedMST.Dequeue().Value;
-                
+                SmallestDistance = SortedMST.Dequeue().Value;
                 Union(Clusters[SmallestDistance.source], Clusters[SmallestDistance.destination]);
             }
             Dictionary<int, int> valCount = new Dictionary<int, int>();
