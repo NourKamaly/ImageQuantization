@@ -269,7 +269,7 @@ namespace ImageQuantization
         /// <param name="ImageMatrix"></param>
         /// <returns>Dictionary of distinected color and its number </returns>
         /// 
-        public static List<int> MapColor = new List<int>();
+        public static Dictionary<int, int> MapColor = new Dictionary<int, int>();
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
             int counter = 0;
@@ -288,10 +288,22 @@ namespace ImageQuantization
                     color = ImageMatrix[i, j];
                     if (visited_color[color.red, color.green, color.blue] == false)
                     {
-                        MapColor.Add(counter);
-                        counter++;
                         visited_color[color.red, color.green, color.blue] = true;
                         dstinected_color.Add(color);
+
+                        string Rstring, Gstring, Bstring, hexColor; int intColor;
+                        Rstring = color.red.ToString("X");
+                        if (Rstring.Length == 1)Rstring = "0" + Rstring;
+                        Gstring = color.green.ToString("X");
+                        if (Gstring.Length == 1)Gstring = "0" + Gstring;
+                        Bstring = color.blue.ToString("X");
+                        if (Bstring.Length == 1)Bstring = "0" + Bstring;
+
+                        hexColor = Rstring + Gstring + Bstring;
+                        intColor = Convert.ToInt32(hexColor, 16);
+
+                        MapColor.Add(intColor,counter);
+                        counter++;
                     }
                 }
             }
@@ -419,6 +431,10 @@ namespace ImageQuantization
             return ClustersColors;
         }
 
+        //public static RGBPixel[,] Quantize(Dictionary<int, int[]> ClustersColors, Dictionary<int, int> Clusters, List<RGBPixel> DistinctColors)
+        //{
+
+        //}
 
 
 

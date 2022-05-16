@@ -51,7 +51,6 @@
     <Compile Include="Clustering.cs" />
     <Compile Include="ClustersDetection.cs" />
     <Compile Include="QuickSort.cs" />
-    <Compile Include="hexaDecimalColor.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

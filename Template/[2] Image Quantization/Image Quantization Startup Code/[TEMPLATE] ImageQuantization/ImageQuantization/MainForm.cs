@@ -39,6 +39,7 @@ namespace ImageQuantization
             int maskSize = (int)nudMaskSize.Value ;
             ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
+            pictureBox2.Image.Save("C:\\Users\\Norhan\\Desktop\\[2] Image Quantization\\Testcases\\Testcases\\Complete\\Complete Test\\Complete Test\\Large\\Filtered.jpg");
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -61,6 +62,11 @@ namespace ImageQuantization
             textBox3.Text = ts.Minutes + ":" + ts.Seconds + ":" + ts.Milliseconds;
         }
         private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
         {
 
         }
