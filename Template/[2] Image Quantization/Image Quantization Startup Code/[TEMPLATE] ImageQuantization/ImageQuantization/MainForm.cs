@@ -56,8 +56,9 @@ namespace ImageQuantization
             int k=ClustersDetection.KClustersDetection();
             textBox4.Text = k.ToString();
             textBox1.Text = ImageOperations.sum_mst.ToString();
-           
-            
+            ImageMatrix = ImageOperations.Quantize(ImageMatrix, representitiveColors, kclusters);
+            ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
+
             stopwatch.Stop();
 
             TimeSpan ts = stopwatch.Elapsed;
