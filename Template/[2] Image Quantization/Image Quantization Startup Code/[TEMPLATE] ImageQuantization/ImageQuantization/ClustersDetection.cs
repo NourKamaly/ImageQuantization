@@ -27,58 +27,60 @@ namespace ImageQuantization
 
         public static void initializer(List<edges> alledges)
         {
-            edges = Clustering.alledges;
-            k = 0;
+            edges = Clustering.alledges;                                                   //O(1)
+            k = 0;                                                                         //O(1)
         }
         public static void calculateMean()
         {
 
-            double sum = 0;
+            double sum = 0;                                                                //O(1)
 
-            for (int i = 0; i < edges.Count; i++)
+            for (int i = 0; i < edges.Count; i++)                                          //O(E)
             {
-                sum += edges[i].weight;
+                sum += edges[i].weight;                                                    //O(1)
             }
 
-            mean = sum / edges.Count;
+            mean = sum / edges.Count;                                                      //O(1)
+            //Complixity of function: O(E+1) ====> O(E)  Overall.
         }
 
         public static void calculateStandardDeviation()
         {
-            double sum = 0;
-            for (int i = 0; i < edges.Count; i++)
+            double sum = 0;                                                                //O(1)
+            for (int i = 0; i < edges.Count; i++)                                          //O(E)
             {
-                if ((edges[i].weight - mean) * (edges[i].weight - mean) > max)
+                if ((edges[i].weight - mean) * (edges[i].weight - mean) > max)             //O(1)
                 {
-                    max = (edges[i].weight - mean) * (edges[i].weight - mean);
-                    MaxIndex = i;
+                    max = (edges[i].weight - mean) * (edges[i].weight - mean);             //O(1)
+                    MaxIndex = i;                                                          //O(1)
                 }
 
-                sum += ((edges[i].weight - mean) * (edges[i].weight - mean));
+                sum += ((edges[i].weight - mean) * (edges[i].weight - mean));              //O(1)
             }
 
-            max = double.MinValue;
-            standardDeviation = sum / (edges.Count - 1);
-            standardDeviation = Math.Sqrt(standardDeviation);
+            max = double.MinValue;                                                         //O(1)
+            standardDeviation = sum / (edges.Count - 1);                                   //O(1)
+            standardDeviation = Math.Sqrt(standardDeviation);                              //O(1)
+            //Complixity of function: O(E + 1) ====> O(E)  Overall.
         }
 
         public static int KClustersDetection()
         {
 
-            calculateMean();
-            calculateStandardDeviation();
-            
-            while (Math.Abs(standardDeviation - previous) > 0.0001)
-            {
-                edges.RemoveAt(MaxIndex);
-                previous = standardDeviation;
-                calculateMean();
-                calculateStandardDeviation();
-                k++;
-            }
-            return k;
-        }
+            calculateMean();                                                               //O(E)
+            calculateStandardDeviation();                                                  //O(E)
 
+            while (Math.Abs(standardDeviation - previous) > 0.0001)                        //O(E)                       
+            {
+                edges.RemoveAt(MaxIndex);                                                  //O(1)
+                previous = standardDeviation;                                              //O(1)
+                calculateMean();                                                           //O(E)
+                calculateStandardDeviation();                                              //O(E)
+                k++;                                                                       //O(1)
+            }
+            return k;                                                                      //O(1)
+            //Complixity of function: O( E + E + E * ( E + E ) ) ====> O(E^2)  Overall.
+        }
 
     }
 }
