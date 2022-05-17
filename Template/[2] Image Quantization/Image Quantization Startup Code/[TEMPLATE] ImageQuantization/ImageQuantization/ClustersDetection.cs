@@ -16,6 +16,15 @@ namespace ImageQuantization
         public static int k;
         public static double previous = 0;
 
+        /// <summary>
+        /// Detection Number of clusters Automataticaly. 
+        /// </summary>
+        /// <function name="calculateMean">calculate mean of all edges</function>
+        /// <function name="calculateStandardDeviation">calculate standard division of all edges</function>
+        /// <function name="KClustersDetection">Calculate number of K</function>
+        /// <param    name="alledges"> All edges of MST</param>
+        /// <returns>Number of detected clusters</returns>
+
         public static void initializer(List<edges> alledges)
         {
             edges = Clustering.alledges;
@@ -58,7 +67,7 @@ namespace ImageQuantization
 
             calculateMean();
             calculateStandardDeviation();
-
+            
             while (Math.Abs(standardDeviation - previous) > 0.0001)
             {
                 edges.RemoveAt(MaxIndex);

@@ -49,7 +49,7 @@ namespace ImageQuantization
             ColorsConstruction.sum_mst = 0;
             List<RGBPixel> dc = ColorsConstruction.getDistincitColors(ImageMatrix);
             textBox2.Text = dc.Count.ToString();
-            Vertex[] mst = ColorsConstruction.MST(dc);
+            Vertex[] mst = ColorsConstruction.mininmumSpanningTree(dc);
             Dictionary<int, int> kclusters = Clustering.getKClusters(mst, Int32.Parse(numberofclusters.Text), dc);
             Dictionary<int, int[]> representitiveColors = Clustering.getClusterRepresentitive(kclusters, dc);
             textBox1.Text = ColorsConstruction.sum_mst.ToString();

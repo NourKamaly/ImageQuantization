@@ -41,9 +41,9 @@ namespace ImageQuantization
         {
             Node node = new Node() { Priority = priority, Object = obj };
             queue.Add(node);
-            obj.color = MapColor[obj.V];
+            obj.color = MapColor[obj.child];
             heapSize++;
-            indexes[obj.V] = heapSize;
+            indexes[obj.child] = heapSize;
             BuildHeapMin(heapSize);
         }
         private void BuildHeapMin(int i)
@@ -51,8 +51,8 @@ namespace ImageQuantization
             while (i >= 0 && queue[(i - 1) / 2].Priority > queue[i].Priority)
             {
 
-                int child = queue[i].Object.V;
-                int parent = queue[(i - 1) / 2].Object.V;
+                int child = queue[i].Object.child;
+                int parent = queue[(i - 1) / 2].Object.child;
                 indexes[child] = (i - 1) / 2;
                 indexes[parent] = i;
 
@@ -76,8 +76,8 @@ namespace ImageQuantization
             if (lowest != i)
             {
 
-                int child = queue[lowest].Object.V;
-                int parent = queue[i].Object.V;
+                int child = queue[lowest].Object.child;
+                int parent = queue[i].Object.child;
                 indexes[child] = i;
                 indexes[parent] = lowest;
                 Swap(lowest, i);
@@ -90,7 +90,7 @@ namespace ImageQuantization
             {
                 var returnVal = queue[0].Object;
                 queue[0] = queue[heapSize];
-                indexes[queue[heapSize].Object.V] = 0;
+                indexes[queue[heapSize].Object.child] = 0;
                 queue.RemoveAt(heapSize);
                 heapSize--;
                 //Maintaining lowest or highest at root based on min or max queue
@@ -106,7 +106,7 @@ namespace ImageQuantization
 
         public void UpdatePriority(Vertex obj, double priority)
         {
-            int realInd = indexes[obj.V];
+            int realInd = indexes[obj.child];
             Node node = queue[realInd];
             node.Priority = priority;
             BuildHeapMin(realInd);

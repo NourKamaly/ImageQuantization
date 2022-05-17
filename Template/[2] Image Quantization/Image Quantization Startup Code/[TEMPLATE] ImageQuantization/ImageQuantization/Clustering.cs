@@ -26,8 +26,8 @@ namespace ImageQuantization
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
             {
-                Clusters.Add(MST[ctr].V, ctr);
-                alledges.Add(new edges() { source = MST[ctr].Parent, destination = MST[ctr].V, weight = MST[ctr].Key });
+                Clusters.Add(MST[ctr].child, ctr);
+                alledges.Add(new edges() { source = MST[ctr].Parent, destination = MST[ctr].child, weight = MST[ctr].Key });
             }
             //MessageBox.Show(Clusters.Count.ToString());
             for (ctr = 0; ctr < alledges.Count; ctr++)
