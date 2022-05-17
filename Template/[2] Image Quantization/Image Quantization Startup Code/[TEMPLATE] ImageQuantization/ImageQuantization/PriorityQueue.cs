@@ -8,14 +8,6 @@ using System.Linq;
 
 namespace ImageQuantization
 {
-    //public class Vertex
-    //{
-    //    public double Key { get; set; } = double.MaxValue;
-    //    public int Parent { get; set; } = -1;
-    //    public int V { get; set; }
-    //    public int Color { get; set; }
-    //    public bool IsProcessed { get; set; }
-    //}
     public class PriorityQueue<T>
     {
         class Node
