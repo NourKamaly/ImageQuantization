@@ -46,21 +46,19 @@ namespace ImageQuantization
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            ImageOperations.sum_mst = 0;
-            List<RGBPixel> dc = ImageOperations.getDistincitColors(ImageMatrix);
+            ColorsConstruction.sum_mst = 0;
+            List<RGBPixel> dc = ColorsConstruction.getDistincitColors(ImageMatrix);
             textBox2.Text = dc.Count.ToString();
-            Vertex[] mst = ImageOperations.MST(dc);
-            Dictionary<int, int> kclusters = ImageOperations.getKClusters(mst,Int32.Parse(numberofclusters.Text), dc);
-            Dictionary<int, int[]> representitiveColors = ImageOperations.getClusterRepresentitive(kclusters, dc);
-            ClustersDetection.initializer(ImageOperations.alledges);
-            int k=ClustersDetection.KClustersDetection();
-            textBox4.Text = k.ToString();
-            textBox1.Text = ImageOperations.sum_mst.ToString();
+            Vertex[] mst = ColorsConstruction.MST(dc);
+            Dictionary<int, int> kclusters = Clustering.getKClusters(mst, Int32.Parse(numberofclusters.Text), dc);
+            Dictionary<int, int[]> representitiveColors = Clustering.getClusterRepresentitive(kclusters, dc);
+            textBox1.Text = ColorsConstruction.sum_mst.ToString();
             ImageMatrix = Quantization.Quantize(ImageMatrix, representitiveColors, kclusters);
             ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
-
+            ClustersDetection.initializer(Clustering.alledges);
+            int k = ClustersDetection.KClustersDetection();
+            textBox4.Text = k.ToString();
             stopwatch.Stop();
-
             TimeSpan ts = stopwatch.Elapsed;
             textBox3.Text = ts.Minutes + ":" + ts.Seconds + ":" + ts.Milliseconds;
         }

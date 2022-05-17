@@ -1,49 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Drawing.Imaging;
+using System.Linq;
+using QuikGraph.Algorithms;
+using QuikGraph.Collections;
 
 namespace ImageQuantization
 {
     public class Clustering
     {
-        private static Vertex[] MST;
-        private static int K;
-        private static List<RGBPixel> DistinctColors;
-        public Clustering(Vertex[] MinimumSpanningTree, int NumOfClusters, List<RGBPixel> DistinctColorsOfGraph)
+        // key is the color number, value is the number of cluster it is belonging to
+        public static Dictionary<int, int> Clusters;
+        //public static PriorityQueue<Vertex> SortedMST;
+        public static FibonacciHeap<double, edges> SortedMST;
+        public static List<edges> alledges;
+        public static Dictionary<int, int> getKClusters(Vertex[] MST, int K, List<RGBPixel> DistinctColors)
         {
-            MST = MinimumSpanningTree;
-            K = NumOfClusters;
-            DistinctColors = DistinctColorsOfGraph;
-        }
-        public static Dictionary<int, int> getKClusters()
-        {
-            // SortedMST : priority queue of vertices that sorts them according to the edge weight between source node & destination node
-            PriorityQueue<Vertex> SortedMST = new PriorityQueue<Vertex>(DistinctColors);
-
-            // Clusters : key -> distinct color ID, value -> ID of cluster this distinct color belongs to 
-            Dictionary<int, int> Clusters = new Dictionary<int, int>();
-
+            SortedMST = new FibonacciHeap<double, edges>();
+            Clusters = new Dictionary<int, int>();
+            alledges = new List<edges>(MST.Length);
+            //int knum = DistinctColors.Count;
             int ctr;
             for (ctr = 0; ctr < MST.Length; ctr++)
             {
                 Clusters.Add(MST[ctr].V, ctr);
-                SortedMST.Enqueue(MST[ctr].Key, MST[ctr]);
+                alledges.Add(new edges() { source = MST[ctr].Parent, destination = MST[ctr].V, weight = MST[ctr].Key });
             }
-
-            for (ctr = 0; ctr < K; ctr++)
+            //MessageBox.Show(Clusters.Count.ToString());
+            for (ctr = 0; ctr < alledges.Count; ctr++)
             {
-                Vertex SmallestDistance = SortedMST.Dequeue();
-                // Node with parent = -1 is the first node of the priority queue, thus it has no parent
-                if (SmallestDistance.Parent != -1)
-                {
-                    Union(Clusters[SmallestDistance.Parent], Clusters[SmallestDistance.V], ref Clusters);
-                }
+                SortedMST.Enqueue(alledges[ctr].weight, alledges[ctr]);
             }
+            //SortedMST.Sort((x, y) => x.Key.CompareTo(y.Key));
+            edges SmallestDistance = SortedMST.Dequeue().Value;
+            for (ctr = 0; ctr < (DistinctColors.Count - K); ctr++)
+            {
+                SmallestDistance = SortedMST.Dequeue().Value;
+                Union(Clusters[SmallestDistance.source], Clusters[SmallestDistance.destination]);
+            }
+            //Dictionary<int, int> valCount = new Dictionary<int, int>();
+
             return Clusters;
         }
-        private static void Union(int ReplaceBy, int Replaced, ref Dictionary<int, int> Clusters)
+        public static void Union(int ReplaceBy, int Replaced)
         {
             int[] Keys = Clusters.Keys.ToArray();
             for (int ctr = 0; ctr < Clusters.Count; ctr++)
@@ -54,18 +56,14 @@ namespace ImageQuantization
                 }
             }
         }
+
         public static Dictionary<int, int[]> getClusterRepresentitive(Dictionary<int, int> Clusters, List<RGBPixel> DistinctColors)
         {
-            //Cluster : key -> distinct color ID, value -> ID of cluster this distinct color belongs to 
-            //Cluster Colors: key -> cluster ID, value -> representitive color in red, green, blue
-            //Dinstinct colors : list of RGBPixels that can be accessed by index
-            //NumOfElementsPerCluster : key -> cluster ID, value -> number of distinct colors belonging to that cluster
-
             Dictionary<int, int[]> ClustersColors = new Dictionary<int, int[]>();
             Dictionary<int, int> NumOfElementsPerCluster = new Dictionary<int, int>();
-            int ColorID, ClusterID;
-
-            //In this loop we add the ID of each unique cluster, and array of size 3 for red,gree,blue
+            //Cluster : key -> color number, value -> cluster number
+            // Cluster Colors: key -> cluster number, value -> representitive color in red, green , blue
+            //Dinstinct colors : list of RGBPixels that can be accessed by index
             foreach (var ClusterNumber in Clusters)
             {
                 if (!ClustersColors.ContainsKey(ClusterNumber.Value))
@@ -74,32 +72,20 @@ namespace ImageQuantization
                     NumOfElementsPerCluster.Add(ClusterNumber.Value, 0);
                 }
             }
-
-            /* 1. Get the color ID as it is the key in Clusters dictionary
-             * 2. Get the cluster ID as is is the value in Clusters dictionary
-             * 3. Add the rgb color to the cluster this color belongs to by accessing the rgb information from 
-             *    DistinctColors list (color ID is the position of the color in the list)
-             * 4. Repeat for all distinct colors
-             */
-            foreach (var Color in Clusters)
+            foreach (var cluster in Clusters)
             {
-                ColorID = Color.Key;
-                ClusterID = Color.Value;
-                ClustersColors[ClusterID][0] += DistinctColors[ColorID].red;
-                ClustersColors[ClusterID][1] += DistinctColors[ColorID].green;
-                ClustersColors[ClusterID][2] += DistinctColors[ColorID].blue;
-                NumOfElementsPerCluster[ClusterID]++;
+                int ColorNumber = cluster.Key;
+                ClustersColors[cluster.Value][0] += DistinctColors[ColorNumber].red;
+                ClustersColors[cluster.Value][1] += DistinctColors[ColorNumber].green;
+                ClustersColors[cluster.Value][2] += DistinctColors[ColorNumber].blue;
+                NumOfElementsPerCluster[cluster.Value]++;
             }
-
-            // Getting the average of all distinct colors belonging to the same cluster
             foreach (var cluster in ClustersColors)
             {
-                ClusterID = cluster.Key;
-                ClustersColors[ClusterID][0] /= NumOfElementsPerCluster[ClusterID];
-                ClustersColors[ClusterID][1] /= NumOfElementsPerCluster[ClusterID];
-                ClustersColors[ClusterID][2] /= NumOfElementsPerCluster[ClusterID];
+                ClustersColors[cluster.Key][0] /= NumOfElementsPerCluster[cluster.Key];
+                ClustersColors[cluster.Key][1] /= NumOfElementsPerCluster[cluster.Key];
+                ClustersColors[cluster.Key][2] /= NumOfElementsPerCluster[cluster.Key];
             }
-
             return ClustersColors;
         }
     }

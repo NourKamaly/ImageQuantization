@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Clustering.cs" />
     <Compile Include="ClustersDetection.cs" />
+    <Compile Include="ColorsConstruction.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

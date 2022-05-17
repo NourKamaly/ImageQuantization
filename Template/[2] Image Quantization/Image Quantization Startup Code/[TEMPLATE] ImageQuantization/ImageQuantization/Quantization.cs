@@ -30,8 +30,7 @@ namespace ImageQuantization
 
                     hexColor = Rstring + Gstring + Bstring;
                     intColor = Convert.ToInt32(hexColor, 16);
-
-                    int colorIndex = ImageOperations.MapColor[intColor];
+                    int colorIndex = ColorsConstruction.MapColor[intColor];
                     int ClusterNumber = Clusters[colorIndex];
 
                     ImageMatrix[i, j].red = (byte)ClustersColors[ClusterNumber][0];

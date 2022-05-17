@@ -18,7 +18,7 @@ namespace ImageQuantization
 
         public static void initializer(List<edges> alledges)
         {
-            edges = alledges;
+            edges = Clustering.alledges;
             k = 0;
         }
         public static void calculateMean()
