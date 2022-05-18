@@ -38,11 +38,11 @@ namespace ImageQuantization
         /// D -> NUMBER OF DISTINCT COLORS
         /// N -> LENGTH OF IMAGE-MATRIX  
         
-        public static Dictionary<int, int> MapColor = new Dictionary<int, int>();                                                                               //O(1)
+        public static Dictionary<int, int> MapColor;                                                                               //O(1)
         public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
             int counter = 0;                                                                                                                                    //O(1)
-
+            MapColor = new Dictionary<int, int>();
             //3D Array to mark visited color from the ImageMatrix.
             bool[,,] visited_color = new bool[256, 256, 256];                                                                                                   //O(1)
 
