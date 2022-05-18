@@ -8,13 +8,13 @@ namespace ImageQuantization
 {
     class ClustersDetection
     {
-        public static List<edges> edges;
-        public static double mean = 0;
-        public static double standardDeviation = 0;
-        public static double max = double.MinValue;
-        public static int MaxIndex;
-        public static int k;
-        public static double previous = 0;
+        public  List<edges> edges;
+        public  double mean = 0;
+        public  double standardDeviation = 0;
+        public  double max = double.MinValue;
+        public  int MaxIndex;
+        public  int k;
+        public  double previous = 0;
 
         /// <summary>
         /// Detection Number of clusters Automataticaly. 
@@ -25,12 +25,12 @@ namespace ImageQuantization
         /// <param    name="alledges"> All edges of MST</param>
         /// <returns>Number of detected clusters</returns>
 
-        public static void initializer(List<edges> alledges)
+        public  void initializer(List<edges> alledges)
         {
-            edges = Clustering.alledges;                                                   //O(1)
+            edges = alledges;                                                   //O(1)
             k = 0;                                                                         //O(1)
         }
-        public static void calculateMean()
+        public  void calculateMean()
         {
 
             double sum = 0;                                                                //O(1)
@@ -44,7 +44,7 @@ namespace ImageQuantization
             //Complixity of function: O(E+1) ====> O(E)  Overall.
         }
 
-        public static void calculateStandardDeviation()
+        public  void calculateStandardDeviation()
         {
             double sum = 0;                                                                //O(1)
             for (int i = 0; i < edges.Count; i++)                                          //O(E)
@@ -64,13 +64,13 @@ namespace ImageQuantization
             //Complixity of function: O(E + 1) ====> O(E)  Overall.
         }
 
-        public static int KClustersDetection()
+        public  int KClustersDetection()
         {
 
             calculateMean();                                                               //O(E)
             calculateStandardDeviation();                                                  //O(E)
 
-            while (Math.Abs(standardDeviation - previous) > 0.0001)                        //O(E)                       
+            while (Math.Abs(standardDeviation - previous) >= 0.0001)                        //O(E)                       
             {
                 edges.RemoveAt(MaxIndex);                                                  //O(1)
                 previous = standardDeviation;                                              //O(1)

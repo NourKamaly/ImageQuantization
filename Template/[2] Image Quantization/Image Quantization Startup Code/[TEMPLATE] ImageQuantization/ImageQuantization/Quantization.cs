@@ -8,7 +8,7 @@ namespace ImageQuantization
 {
     public class Quantization
     {
-        public static RGBPixel[,] Quantize(RGBPixel[,] ImageMatrix, Dictionary<int, int[]> ClustersColors, Dictionary<int, int> Clusters)
+        public  RGBPixel[,] Quantize(RGBPixel[,] ImageMatrix, Dictionary<int, int[]> ClustersColors, Dictionary<int, int> Clusters,Dictionary<int,int> MapColor)
         {
             RGBPixel color;
             int Height = ImageMatrix.GetLength(0);
@@ -30,7 +30,8 @@ namespace ImageQuantization
 
                     hexColor = Rstring + Gstring + Bstring;
                     intColor = Convert.ToInt32(hexColor, 16);
-                    int colorIndex = ColorsConstruction.MapColor[intColor];
+                    ColorsConstruction obj = new ColorsConstruction();
+                    int colorIndex = MapColor[intColor];
                     int ClusterNumber = Clusters[colorIndex];
 
                     ImageMatrix[i, j].red = (byte)ClustersColors[ClusterNumber][0];

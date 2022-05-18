@@ -13,11 +13,11 @@ namespace ImageQuantization
     public class Clustering
     {
         // key is the color number, value is the number of cluster it is belonging to
-        public static Dictionary<int, int> Clusters;
+        public  Dictionary<int, int> Clusters;
         //public static PriorityQueue<Vertex> SortedMST;
-        public static FibonacciHeap<double, edges> SortedMST;
-        public static List<edges> alledges;
-        public static Dictionary<int, int> getKClusters(Vertex[] MST, int K, List<RGBPixel> DistinctColors)
+        public  FibonacciHeap<double, edges> SortedMST;
+        public  List<edges> alledges;
+        public  Dictionary<int, int> getKClusters(Vertex[] MST, int K, List<RGBPixel> DistinctColors)
         {
             SortedMST = new FibonacciHeap<double, edges>();                                                  //O(1)
             Clusters = new Dictionary<int, int>();                                                           //O(1)
@@ -41,7 +41,7 @@ namespace ImageQuantization
 
             return Clusters;
         }
-        public static void Union(int ReplaceBy, int Replaced)
+        public  void Union(int ReplaceBy, int Replaced)
         {
             int[] Keys = Clusters.Keys.ToArray();                                                            
             for (int ctr = 0; ctr < Clusters.Count; ctr++)                                                   // O(D)
@@ -53,7 +53,7 @@ namespace ImageQuantization
             }
         }
 
-        public static Dictionary<int, int[]> getClusterRepresentitive(Dictionary<int, int> Clusters, List<RGBPixel> DistinctColors)
+        public  Dictionary<int, int[]> getClusterRepresentitive(Dictionary<int, int> Clusters, List<RGBPixel> DistinctColors)
         {
             Dictionary<int, int[]> ClustersColors = new Dictionary<int, int[]>();         //O(1)
             Dictionary<int, int> NumOfElementsPerCluster = new Dictionary<int, int>();    //O(1)

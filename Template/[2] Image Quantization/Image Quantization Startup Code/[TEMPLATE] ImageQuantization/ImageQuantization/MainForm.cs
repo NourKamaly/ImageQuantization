@@ -18,6 +18,8 @@ namespace ImageQuantization
         }
 
         RGBPixel[,] ImageMatrix;
+        RGBPixel[,] InputImageMatrix;
+        public static string openfilepath;
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
@@ -27,6 +29,7 @@ namespace ImageQuantization
                 //Open the browsed image and display it
                 string OpenedFilePath = openFileDialog1.FileName;
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
+                openfilepath = OpenedFilePath;
                 ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
             }
             txtWidth.Text = ImageOperations.GetWidth(ImageMatrix).ToString();
@@ -44,19 +47,25 @@ namespace ImageQuantization
 
         private void button1_Click(object sender, EventArgs e)
         {
+            InputImageMatrix = ImageOperations.OpenImage(openfilepath);
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            ColorsConstruction.sum_mst = 0;
-            List<RGBPixel> dc = ColorsConstruction.getDistincitColors(ImageMatrix);
-            textBox2.Text = dc.Count.ToString();
-            Vertex[] mst = ColorsConstruction.mininmumSpanningTree(dc);
-            Dictionary<int, int> kclusters = Clustering.getKClusters(mst, Int32.Parse(numberofclusters.Text), dc);
-            Dictionary<int, int[]> representitiveColors = Clustering.getClusterRepresentitive(kclusters, dc);
-            textBox1.Text = ColorsConstruction.sum_mst.ToString();
-            ImageMatrix = Quantization.Quantize(ImageMatrix, representitiveColors, kclusters);
-            ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
-            ClustersDetection.initializer(Clustering.alledges);
-            int k = ClustersDetection.KClustersDetection();
+            ColorsConstruction colorsconstruction = new ColorsConstruction();
+            Clustering clusterting = new Clustering();
+            Quantization quantization = new Quantization();
+            List<RGBPixel> distinctcolors = colorsconstruction.getDistincitColors(InputImageMatrix);
+            textBox2.Text = distinctcolors.Count.ToString();
+            Vertex[] mst = colorsconstruction.mininmumSpanningTree(distinctcolors);
+            textBox1.Text = colorsconstruction.sum_mst.ToString();
+           
+            Dictionary<int, int> kclusters = clusterting.getKClusters(mst, Int32.Parse(numberofclusters.Text), distinctcolors);
+            Dictionary<int, int[]> representitiveColors = clusterting.getClusterRepresentitive(kclusters, distinctcolors);
+            
+            RGBPixel[,] QuantizedMatrix = quantization.Quantize(InputImageMatrix, representitiveColors, kclusters, colorsconstruction.MapColor);
+            ImageOperations.DisplayImage(QuantizedMatrix, pictureBox2);
+            ClustersDetection clustersdetection = new ClustersDetection();
+            clustersdetection.initializer(clusterting.alledges);
+            int k = clustersdetection.KClustersDetection();
             textBox4.Text = k.ToString();
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;

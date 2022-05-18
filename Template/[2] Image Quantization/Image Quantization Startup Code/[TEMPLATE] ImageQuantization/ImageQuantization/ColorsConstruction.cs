@@ -14,8 +14,8 @@ namespace ImageQuantization
         public RGBPixel color { get; set; }
         public bool Visited { get; set; }
     }
-    
-    
+
+
     public struct edges
     {
         public int source { set; get; }
@@ -37,9 +37,9 @@ namespace ImageQuantization
         /// E -> NUMBER OF EDGES
         /// D -> NUMBER OF DISTINCT COLORS
         /// N -> LENGTH OF IMAGE-MATRIX  
-        
-        public static Dictionary<int, int> MapColor;                                                                               //O(1)
-        public static List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
+
+        public  Dictionary<int, int> MapColor;                                                                               //O(1)
+        public  List<RGBPixel> getDistincitColors(RGBPixel[,] ImageMatrix)
         {
             int counter = 0;                                                                                                                                    //O(1)
             MapColor = new Dictionary<int, int>();
@@ -103,10 +103,10 @@ namespace ImageQuantization
         /// E -> NUMBER OF EDGES
         /// D -> NUMBER OF DISTINCT COLORS
 
-        public static double sum_mst = 0;                                                                                                                       //O(1)
-        public static Vertex[] mininmumSpanningTree(List<RGBPixel> DistinctColors)
+        public  double sum_mst;                                                                                                                       //O(1)
+        public  Vertex[] mininmumSpanningTree(List<RGBPixel> DistinctColors)
         {
-
+            sum_mst = 0;
             int vertexCount = DistinctColors.Count;                                                                                                             //O(1)
 
             Vertex[] vertices = new Vertex[vertexCount];                                                                                                        //O(1)
