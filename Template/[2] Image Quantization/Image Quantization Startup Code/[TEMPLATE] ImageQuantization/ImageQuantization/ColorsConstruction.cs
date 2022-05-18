@@ -112,7 +112,7 @@ namespace ImageQuantization
             Vertex[] vertices = new Vertex[vertexCount];                                                                                                        //O(1)
 
             //Initialize struct of vertices with (Key -> Max value) - (parent -> -1) - (child -> index).
-            for (int i = 0; i < vertexCount; i++)                                                                                                               //O(V)
+            for (int i = 0; i < vertexCount; i++)                                                                                                               //O(D)
             {
                 vertices[i] = new Vertex() { Key = int.MaxValue, Parent = -1, child = i };                                                                      //O(1)
             }
@@ -125,7 +125,7 @@ namespace ImageQuantization
             int current_vertix = 0;                                                                                                                             //O(1)
 
 
-            while (current_vertix < vertexCount)                                                                                                                //O(V)
+            while (current_vertix < vertexCount)                                                                                                                //O(D)
             {
                 //mark vertix as visited to prevent make cycles.
                 vertices[current_vertix].Visited = true;                                                                                                        //O(1)
@@ -137,7 +137,7 @@ namespace ImageQuantization
                 //Summation the MST edges.
                 sum_mst += vertices[current_vertix].Key;                                                                                                        //O(1)
 
-                for (int i = 0; i < vertexCount; i++)                                                                                                           //O(V)
+                for (int i = 0; i < vertexCount; i++)                                                                                                           //O(D)
                 {
                     if (vertices[i].Visited == false)                                                                                                           //O(1)
                     {
@@ -175,6 +175,6 @@ namespace ImageQuantization
             }
             return vertices;                                                                                                                                    //O(1)
         }
-        //Complixity of function: O( V + (V*V) ) ====> O(V^2)  Overall
+        //Complixity of function: O( D + (D*D) ) ====> O(D^2)  Overall
     }
 }
