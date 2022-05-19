@@ -43,8 +43,8 @@ namespace ImageQuantization
             }
 
             return ImageMatrix;
+        //Total Complexity o(N^2)
         }
 
-        //Total Complexity o(N^2)
     }
 }
