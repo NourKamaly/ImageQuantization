@@ -32,10 +32,10 @@ namespace ImageQuantization
             {
                 SortedMST.Enqueue(alledges[ctr].weight, alledges[ctr]);                                      //O(1)
             }
-            edges SmallestDistance = SortedMST.Dequeue().Value;                                              //O(log(E))
+            edges SmallestDistance = SortedMST.Dequeue().Value;                                              //O(log(D))
             for (ctr = 0; ctr < (DistinctColors.Count - K); ctr++)                                           
             {
-                SmallestDistance = SortedMST.Dequeue().Value;                                                //O(log(E))
+                SmallestDistance = SortedMST.Dequeue().Value;                                                //O(log(D))
                 Union(Clusters[SmallestDistance.source], Clusters[SmallestDistance.destination]);            //O(D) (D is distinct colors)
             }
 
